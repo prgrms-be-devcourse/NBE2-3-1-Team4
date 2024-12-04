@@ -76,7 +76,7 @@
     }
   </style>
   <!-- JavaScript -->
-  <script>
+  <script type="text/javascript">
     // 제품 이름과 개수를 관리할 객체
     const cartSummary = {
       "Columbia Nariñó": 0,
@@ -120,12 +120,14 @@
     <button class="btn btn-small btn-outline-info">주문조회</button>
   </div>
 </div>
+<form action="update_item_ok" method="post" name="mfrm" enctype="multipart/form-data">
 <div class="card">
   <div class="row">
     <div class="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
       <h5 class="flex-grow-0"><b>상품 목록</b></h5>
       <ul class="list-group products">
         <%
+          // 상단에서 items 선언
           List<ItemTO> items = (List<ItemTO>) request.getAttribute("items");
           for (ItemTO item : items) {
         %>
@@ -146,6 +148,8 @@
         %>
       </ul>
     </div>
+
+<%--      <input type="hidden" name="email" value="<%=email%>"/>--%>
     <%--주문 목록 & 주소 불러오기 --%>
     <div class="col-md-4 summary p-4">
       <div>
@@ -153,16 +157,25 @@
       </div>
       <hr>
       <%
-        List<OrderItemTO> orderItems =(List<OrderItemTO>) request.getAttribute("orderItem");
-        for (OrderItemTO orderItem : orderItems) {
+        List<OrderItemTO> orderItems = (List<OrderItemTO>) request.getAttribute("orderItem");
+
+        for (ItemTO item : items) { // 상단의 items 재사용
+          String itemQuantity = "0"; // 기본값은 0으로 설정
+          for (OrderItemTO orderItem : orderItems) {
+            if (orderItem.getItem() != null && orderItem.getItem().getItem_id().equals(item.getItem_id())) {
+              // item_id로 매칭 확인 (orderItem.getItem()이 null인지 확인)
+              itemQuantity = orderItem.getItemQuantity(); // 매칭되면 해당 수량 가져오기
+              break;
+            }
       %>
-      <%-- Summery     --%>
       <div class="row">
-        <h6 class="p-0"><%= orderItem.getItemName() %> <span id="badge-<%= orderItem.getItemName() %>" class="badge bg-dark"><%=orderItem.getItemQuantity()%></span></h6>
+        <h6 class="p-0"><%= item.getName() %> <span id="badge-<%= item.getName() %>" class="badge bg-dark"><%=orderItem.getItemQuantity() %></span></h6>
       </div>
       <%
+          }
         }
       %>
+
       <%-- 주문자 정보 출력 --%>
       <%
         OrdersTO orders = (OrdersTO) request.getAttribute("orders");
@@ -182,10 +195,11 @@
         <h5 class="col">총금액</h5>
         <h5 class="col text-end">0원</h5>
       </div>
-      <button class="btn btn-dark col-6" >주문수정</button>
+      <button class="btn btn-dark col-6" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
       <button class="btn btn-dark col-5">주문취소</button>
     </div>
   </div>
 </div>
+</form>
 </body>
 </html>

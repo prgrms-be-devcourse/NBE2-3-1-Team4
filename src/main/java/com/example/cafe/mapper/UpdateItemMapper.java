@@ -17,4 +17,8 @@ public interface UpdateItemMapper {
 
     // 상품 목록 조회
     List<ItemTO> findAllItems();
+
+    //주문자배송정보 업데이트
+    OrdersTO updateOrders(OrdersTO orders);
+
 }

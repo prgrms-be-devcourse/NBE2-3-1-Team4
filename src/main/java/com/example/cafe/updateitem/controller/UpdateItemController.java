@@ -36,8 +36,7 @@ public class UpdateItemController {
 
     @RequestMapping("/update_item_ok")
     public String cafeTeam4_ok() {
-
-        return "main";
+        return "update_ok";
     }
 
     @RequestMapping("/email_check")

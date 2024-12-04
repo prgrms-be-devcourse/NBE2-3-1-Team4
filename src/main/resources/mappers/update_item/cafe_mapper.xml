@@ -28,4 +28,10 @@
     <select id="findAllItems" resultType="Item">
         SELECT item_id, name, price FROM item;
     </select>
+
+    <update id="update_order" >
+        update orders
+        set address=#{address}, zip_code=#{zip_code}
+        where email=#{email}
+    </update>
 </mapper>
