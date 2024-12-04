@@ -161,7 +161,7 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">비밀번호</label>
-          <input type="text" class="form-control" id="postcode">
+          <input type="text" class="form-control" id="password">
         </div>
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
@@ -175,7 +175,8 @@
       </form>
       <div class="row pt-2 pb-2 border-top">
         <h5 class="col">총금액</h5>
-        <h5 class="col text-end">0원</h5>
+        <h5 class="col text-end" id="totalPrice">0원</h5>
+
       </div>
       <button class="btn btn-dark col-12">결제하기</button>
     </div>
@@ -184,37 +185,47 @@
 
 <!-- JavaScript -->
 <script>
+  // 총 가격 계산
+  let total = 0;
   // 제품 이름과 개수를 관리할 객체
   const cartSummary = {
-    "Columbia Nariñó": 5000,
-    "Brazil Serra Do Caparaó": 6000,
-    "Ethiopia Yirgacheffe": 7000,
-    "Guatemala Antigua": 8000
+    "Columbia Nariñó": { price: 5000, count: 0 },
+    "Brazil Serra Do Caparaó": { price: 6000, count: 0 },
+    "Ethiopia Yirgacheffe": { price: 7000, count: 0 },
+    "Guatemala Antigua": { price: 8000, count: 0 }
   };
 
   // "추가" 버튼 클릭 시 실행되는 함수
   function addToCart(productName) {
     // 개수 증가
-    cartSummary[productName]++;
-
+    cartSummary[productName].count++;
     // UI 업데이트
-    const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+    const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
     if (badge) {
-      badge.textContent = `${cartSummary[productName]}개`;
+      badge.textContent = `${'${cartSummary[productName].count}'}개`;
     }
+
+    total += cartSummary[productName].price;
+    document.getElementById('totalPrice').textContent = `${'${total}'}원`;
+    console.log(cartSummary[productName], total);
   }
 
   // "삭제하기" 버튼 클릭 시 실행되는 함수
   function removeFromCart(productName) {
     // 개수가 0 이하로 내려가지 않도록 처리
-    if (cartSummary[productName] > 0) {
-      cartSummary[productName]--;
-    }
+    if (cartSummary[productName].count > 0) {
+      cartSummary[productName].count--;
 
-    // UI 업데이트
-    const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
-    if (badge) {
-      badge.textContent = `${cartSummary[productName]}개`;
+      // UI 업데이트
+      const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
+      console.log(badge);
+      if (badge) {
+        badge.textContent = `${'${cartSummary[productName].count}'}개`;
+      }
+      total -= cartSummary[productName].price;
+
+      document.getElementById('totalPrice').textContent = `${'${total}'}원`;
+      console.log(cartSummary[productName],total);
     }
   }
 </script>
