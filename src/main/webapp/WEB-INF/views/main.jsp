@@ -178,7 +178,7 @@
         <h5 class="col text-end" id="totalPrice">0원</h5>
 
       </div>
-      <button class="btn btn-dark col-12">결제하기</button>
+      <button class="btn btn-dark col-12" id="checkoutButton" onclick="checkoutOrder()">결제하기</button>
     </div>
   </div>
 </div>
@@ -188,45 +188,69 @@
   // 총 가격 계산
   let total = 0;
   // 제품 이름과 개수를 관리할 객체
-  const cartSummary = {
-    "Columbia Nariñó": { price: 5000, count: 0 },
-    "Brazil Serra Do Caparaó": { price: 6000, count: 0 },
-    "Ethiopia Yirgacheffe": { price: 7000, count: 0 },
-    "Guatemala Antigua": { price: 8000, count: 0 }
-  };
+  const cartSummary = [
+    { name: "Columbia Nariñó", count: 0, price: 5000 },
+    { name: "Brazil Serra Do Caparaó", count: 0, price: 6000 },
+    { name: "Ethiopia Yirgacheffe", count: 0, price: 7000 },
+    { name: "Guatemala Antigua", count: 0, price: 8000 }
+  ];
 
   // "추가" 버튼 클릭 시 실행되는 함수
   function addToCart(productName) {
+    //cartSummary에서 productName 찾기
+    const product = cartSummary.find(item => item.name === productName);
     // 개수 증가
-    cartSummary[productName].count++;
+    product.count++;
+
     // UI 업데이트
     const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
     if (badge) {
-      badge.textContent = `${'${cartSummary[productName].count}'}개`;
+      badge.textContent = `${'${product.count}'}개`;
     }
 
-    total += cartSummary[productName].price;
+    total += product.price;
     document.getElementById('totalPrice').textContent = `${'${total}'}원`;
-    console.log(cartSummary[productName], total);
   }
 
   // "삭제하기" 버튼 클릭 시 실행되는 함수
   function removeFromCart(productName) {
+    //cartSummary에서 productName 찾기
+    const product = cartSummary.find(item => item.name === productName);
+
     // 개수가 0 이하로 내려가지 않도록 처리
-    if (cartSummary[productName].count > 0) {
-      cartSummary[productName].count--;
+    if (product.count > 0) {
+      product.count--;
 
       // UI 업데이트
       const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
-      console.log(badge);
       if (badge) {
-        badge.textContent = `${'${cartSummary[productName].count}'}개`;
+        badge.textContent = `${'${product.count}'}개`;
       }
-      total -= cartSummary[productName].price;
 
+      total -= product.price;
       document.getElementById('totalPrice').textContent = `${'${total}'}원`;
-      console.log(cartSummary[productName],total);
     }
+  }
+
+  // 결제하기 버튼, json 데이터 서버로 전송
+  function checkoutOrder() {
+    // 사용자 데이터 가져오기
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const address = document.getElementById("address").value;
+    const postcode = document.getElementById("postcode").value;
+
+    // 주문 JSON 생성
+    const orderData = {
+      email,
+      password,
+      address,
+      postcode,
+      total,
+      cartSummary
+    };
+    console.log(orderData);
+
   }
 </script>
 </body>
