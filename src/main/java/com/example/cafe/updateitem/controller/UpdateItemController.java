@@ -10,4 +10,14 @@ public class UpdateItemController {
     public String cafeTeam4() {
         return "main";
     }
+    @RequestMapping("/update_item_ok")
+    public String cafeTeam4_ok() {
+
+        return "main";
+    }
+
+    @RequestMapping("/email_check")
+    public String check(){
+        return "check";
+    }
 }
