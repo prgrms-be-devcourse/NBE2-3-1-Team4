@@ -20,10 +20,11 @@ public class OrderItemTO {
     private ItemTO item;
 
     public String getItemName(){
-        return item !=null ? item.getName() : "상품없음";
+        return item != null ? item.getName() : "상품없음";
     }
 
     public String getItemQuantity(){
         return orderCount != null ? orderCount : "0";
     }
+
 }

@@ -23,9 +23,9 @@ public class UpdateItemController {
         List<ItemTO> items = updateItemDAO.getAllItems(); //DAO -> DB 통해서 데이터 조회
         model.addAttribute("items", items);
 
-//        //이메일 -> 사용자 조회
-//        OrdersTO orders = updateItemDAO.getUserByEmail(email);
-//        model.addAttribute("orders", orders);
+        //이메일 -> 사용자 조회
+        OrdersTO orders = updateItemDAO.getUserByEmail(email);
+        model.addAttribute("orders", orders);
 
         //주문 상품 조회
         List<OrderItemTO> orderItem = updateItemDAO.getOrderByEmail(email);

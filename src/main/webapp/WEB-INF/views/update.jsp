@@ -1,6 +1,7 @@
 <%@ page import="com.example.cafe.dto.ItemTO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.cafe.dto.OrderItemTO" %>
+<%@ page import="com.example.cafe.dto.OrdersTO" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -162,15 +163,18 @@
       <%
         }
       %>
-
+      <%-- 주문자 정보 출력 --%>
+      <%
+        OrdersTO orders = (OrdersTO) request.getAttribute("orders");
+      %>
       <form>
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
-          <input type="text" class="form-control mb-1" id="address">
+          <input type="text" class="form-control mb-1" id="address" value="<%= orders.getAddress() %>" readonly>
         </div>
         <div class="mb-3">
-          <label for="postcode" class="form-label">우편번호</label>
-          <input type="text" class="form-control" id="postcode">
+          <label for="zip_code" class="form-label">우편번호</label>
+          <input type="text" class="form-control" id="zip_code" value="<%= orders.getZip_code() %>" readonly>  <!-- 'postcode' -> 'zip_code' -->
         </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
       </form>

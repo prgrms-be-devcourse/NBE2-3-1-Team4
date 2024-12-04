@@ -8,12 +8,12 @@
         WHERE email = #{email} AND password = #{password}
     </select>
 
-    <!--    &lt;!&ndash; 이메일로 사용자 정보 조회 &ndash;&gt;-->
-    <!--    <select id="findUserByEmail" resultType="Orders">-->
-    <!--        SELECT email, address, postcode-->
-    <!--        FROM orders-->
-    <!--        WHERE email = #{email}-->
-    <!--    </select>-->
+        <!-- 이메일로 사용자 정보 조회 -->
+    <select id="findUserByEmail" resultType="Orders">
+        SELECT address, zip_code  <!-- 'postcode' -> 'zip_code' -->
+        FROM orders
+        WHERE email = #{email}
+    </select>
 
     <!-- 이메일로 해당 주문 내역 조회 -->
     <select id="findOrdersByEmail" resultType="OrderItem">
