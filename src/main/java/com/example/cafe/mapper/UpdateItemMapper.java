@@ -2,7 +2,6 @@ package com.example.cafe.mapper;
 
 import com.example.cafe.dto.ItemTO;
 import com.example.cafe.dto.OrderItemTO;
-import com.example.cafe.dto.OrdersTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

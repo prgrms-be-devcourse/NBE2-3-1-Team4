@@ -2,8 +2,9 @@ package com.example.cafe.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.ibatis.type.Alias;
 
-//@Alias(value = "")
+@Alias(value = "OrderItem")
 @Getter
 @Setter
 //@AllArgsConstructor
@@ -14,4 +15,15 @@ public class OrderItemTO {
     private String item_id;
     private String orderCount;
     private String orderPrice;
+
+
+    private ItemTO item;
+
+    public String getItemName(){
+        return item !=null ? item.getName() : "상품없음";
+    }
+
+    public String getItemQuantity(){
+        return orderCount != null ? orderCount : "0";
+    }
 }
