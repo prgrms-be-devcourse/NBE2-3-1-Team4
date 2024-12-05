@@ -188,7 +188,11 @@
       %>
 
         <form action="/update_item_ok" method="post" name="mfrm">
-            <input type="hidden" name="email" value="<%=email %>">
+          <input type="hidden" name="email" value="<%= email %>">
+          <div class="mb-3">
+            <label type="hidden" for="email" class="form-label">이메일</label>
+            <input type="text" class="form-control mb-1" id="email" name="email" value="<%= email %>">
+          </div>
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
             <input type="text" class="form-control mb-1" id="address" name="address" value="<%= address %>">

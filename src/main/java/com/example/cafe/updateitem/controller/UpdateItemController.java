@@ -19,7 +19,7 @@ public class UpdateItemController {
     UpdateItemDAO updateItemDAO;
 
     @RequestMapping("/update_item")
-    public String cafeTeam4(@RequestParam("email") String email, Model model) {
+    public String cafeTeam4(@RequestParam(value = "email") String email, Model model) {
         //상품 목록 조회
         List<ItemTO> items = updateItemDAO.getAllItems(); //DAO -> DB 통해서 데이터 조회
         model.addAttribute("items", items);
@@ -37,6 +37,10 @@ public class UpdateItemController {
 
     @RequestMapping("/update_item_ok")
     public String cafeTeam4_ok(HttpServletRequest request, Model model) {
+        System.out.println("Received email: " + request.getParameter("email"));
+        System.out.println("Received address: " + request.getParameter("address"));
+        System.out.println("Received zip_code: " + request.getParameter("zip_code"));
+
         OrdersTO orders = new OrdersTO();
         orders.setEmail(request.getParameter("email"));
         orders.setAddress(request.getParameter("address"));
