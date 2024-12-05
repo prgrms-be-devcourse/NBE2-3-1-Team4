@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <%
-    String email = (String)request.getAttribute( "email" );
+    String orderId = (String)request.getAttribute( "order_id" );
     int flag = (Integer)request.getAttribute( "flag" );
 
     out.println( "<script type='text/javascript'>" );
     if ( flag == 0 ) {
         // 정상
         out.println("alert( '수정 성공' );");
-        out.println("location.href='./update_item?email=" + email + "';");
+        out.println("location.href='./update_ok;");
     } else if ( flag == 1 ) {
         out.println( "alert( '오류' );" );
         out.println( "history.back();" );
@@ -25,6 +24,6 @@
 <head>
 </head>
 <body>
-update_ok
+<h1>수정이 완료되었습니다.</h1>
 </body>
 </html>

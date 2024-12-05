@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 
+import java.util.List;
+
 @Alias(value = "Item")
 @Getter
 @Setter
@@ -16,4 +18,7 @@ public class ItemTO {
     private String name;
     private String itemQuantity;
     private String price;
+
 }
+
+

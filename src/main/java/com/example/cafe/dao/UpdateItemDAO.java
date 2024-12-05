@@ -17,25 +17,26 @@ public class UpdateItemDAO {
     public List<ItemTO> getAllItems() {
         return updateItemMapper.findAllItems();
     }
-    //해당 이메일로 주문 내역 조회
-    public List<OrderItemTO> getOrderByEmail(String email) {
-        return updateItemMapper.findOrdersByEmail(email);
+
+    // 주문 ID로 사용자 정보 조회
+    public OrdersTO getUserByOrderId(String orderId) {
+        return updateItemMapper.findUserByOrderId(orderId);
     }
 
-    public OrdersTO getUserByEmail(String email) {
-        return updateItemMapper.findUserByEmail(email);
+    // 주문 ID로 주문 내역 조회
+    public List<OrderItemTO> getOrderByOrderId(String orderId) {
+        return updateItemMapper.findOrdersByOrderId(orderId);
     }
 
     // 주문자 배송 정보 업데이트
     public int updateOrders(OrdersTO orders) {
-        int flag =2;
+        int flag = 2;
         int result = updateItemMapper.updateOrders(orders);
-        if(result ==0){
-            flag =1;
-        }else if(result ==1){
-            flag =0;
+        if (result == 0) {
+            flag = 1;
+        } else if (result == 1) {
+            flag = 0;
         }
         return flag;
     }
-
 }

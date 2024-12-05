@@ -13,12 +13,12 @@ public interface UpdateItemMapper {
     List<OrderItemTO> findOrdersByEmail(String email);
 
     // 이메일로 사용자 정보 조회
-    OrdersTO findUserByEmail(String email);
+    OrdersTO findUserByOrderId(String orderId);
+
+    List<OrderItemTO> findOrdersByOrderId(String orderId);
+
+    int updateOrders(OrdersTO ordersTO);
 
     // 상품 목록 조회
     List<ItemTO> findAllItems();
-
-    //주문자배송정보 업데이트
-    int updateOrders(OrdersTO orders);
-
 }

@@ -2,15 +2,23 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.cafe.dto.OrderItemTO" %>
 <%@ page import="com.example.cafe.dto.OrdersTO" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    OrdersTO orders = (OrdersTO) request.getAttribute("orders");
-    List<OrderItemTO> orderItems =(List<OrderItemTO>) request.getAttribute("orderItem");
-    List<ItemTO> items = (List<ItemTO>) request.getAttribute("items");
+  OrdersTO orders = (OrdersTO) request.getAttribute("orders");
+  ArrayList<OrderItemTO> orderItems =(ArrayList<OrderItemTO>) request.getAttribute("orderItem");
+  List<ItemTO> items = (List<ItemTO>) request.getAttribute("items");
 
-    String email = orders.getEmail();
-    String address = orders.getAddress();
-    String zip_code = orders.getZip_code();
+  String email = orders.getEmail();
+  String address = orders.getAddress();
+  String zip_code = orders.getZip_code();
+  String orderId = (String) request.getAttribute("order_id");
+
+  if (orderId == null) {
+    out.println("order_id is null");
+  } else {
+    out.println("order_id: " + orderId);
+  }
 
 %>
 <!doctype html>
@@ -120,18 +128,18 @@
         badge.textContent = `${cartSummary[productName]}개`;
       }
     }
-        // 수정버튼 클릭시
-        document.getElementById('mbtn').onclick = function(){
-            if(document.mfrm.address.value == ''){
-                alert('주소를 입력하세요');
-                return false;
-            }
-            if(document.mfrm.zip_code.value == ''){
-                alert('우편번호를 입력하세요');
-                return false;
-            }
-            document.mfrm.submit();
-        };
+    // 수정버튼 클릭시
+    document.getElementById('mbtn').onclick = function(){
+      if(document.mfrm.address.value == ''){
+        alert('주소를 입력하세요');
+        return false;
+      }
+      if(document.mfrm.zip_code.value == ''){
+        alert('우편번호를 입력하세요');
+        return false;
+      }
+      document.mfrm.submit();
+    };
 
   </script>
   <title>주문 목록</title>
@@ -170,7 +178,7 @@
       </ul>
     </div>
 
-<%--      <input type="hidden" name="email" value="<%=email%>"/>--%>
+    <%--      <input type="hidden" name="email" value="<%=email%>"/>--%>
     <%--주문 목록 & 주소 불러오기 --%>
     <div class="col-md-4 summary p-4">
       <div>
@@ -186,30 +194,43 @@
       <%
         }
       %>
+      <%
+        for (ItemTO item : items) {
+      %>
+      <div class="row">
+        <h6 class="p-0"><%= item.getName() %> <span id="badge-<%= item.getName() %>" class="badge bg-dark"><%=item.getItemQuantity()%></span></h6>
+      </div>
+      <%
+        }
+      %>
 
-        <form action="/update_item_ok" method="post" name="mfrm">
-          <input type="hidden" name="email" value="<%= email %>">
-          <div class="mb-3">
-            <label type="hidden" for="email" class="form-label">이메일</label>
-            <input type="text" class="form-control mb-1" id="email" name="email" value="<%= email %>" readonly>
-          </div>
+      <form action="update_item_ok" method="post" name="mfrm">
+        <input type="hidden" name="order_id" value="<%= orderId %>">
+        <div class="mb-3">
+          <label type="hidden" for="order_id" class="form-label">주문번호</label>
+          <input type="text" class="form-control mb-1" id="order_id" name="order_id" value="<%= orderId %>" readonly>
+        </div>
+        <div class="mb-3">
+          <label type="hidden" for="email" class="form-label">이메일</label>
+          <input type="text" class="form-control mb-1" id="email" name="email" value="<%= email %>" readonly>
+        </div>
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
-            <input type="text" class="form-control mb-1" id="address" name="address" value="<%= address %>">
+          <input type="text" class="form-control mb-1" id="address" name="address" value="<%= address %>">
         </div>
         <div class="mb-3">
           <label for="zip_code" class="form-label">우편번호</label>
-            <input type="text" class="form-control" id="zip_code" name="zip_code" value="<%= zip_code %>">
+          <input type="text" class="form-control" id="zip_code" name="zip_code" value="<%= zip_code %>">
         </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
 
         <div class="row pt-2 pb-2 border-top">
-            <h5 class="col">총금액</h5>
-            <h5 class="col text-end">0원</h5>
+          <h5 class="col">총금액</h5>
+          <h5 class="col text-end">0원</h5>
         </div>
         <button type="submit" class="btn btn-dark col-6" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
         <button class="btn btn-dark col-5">주문취소</button>
-        </form>
+      </form>
     </div>
   </div>
 </div>

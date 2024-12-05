@@ -9,8 +9,6 @@ import java.util.List;
 @Alias(value = "OrderItem")
 @Getter
 @Setter
-//@AllArgsConstructor
-//@NoArgsConstructor
 public class OrderItemTO {
     private String order_item_id;
     private String order_id;

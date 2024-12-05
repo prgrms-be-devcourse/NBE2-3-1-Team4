@@ -19,40 +19,43 @@ public class UpdateItemController {
     UpdateItemDAO updateItemDAO;
 
     @RequestMapping("/update_item")
-    public String cafeTeam4(@RequestParam(value = "email") String email, Model model) {
-        //상품 목록 조회
-        List<ItemTO> items = updateItemDAO.getAllItems(); //DAO -> DB 통해서 데이터 조회
+    public String updateItemPage(@RequestParam(value = "order_id") String orderId, Model model, HttpServletRequest request) {
+        // orderId가 null인지 확인
+        System.out.println("Received order_id: " + orderId);
+
+        // orderId를 request에 설정
+        request.setAttribute("order_id", orderId);
+
+        // 나머지 코드
+        List<ItemTO> items = updateItemDAO.getAllItems();
         model.addAttribute("items", items);
 
-        //이메일 -> 사용자 조회
-        OrdersTO orders = updateItemDAO.getUserByEmail(email);
+        OrdersTO orders = updateItemDAO.getUserByOrderId(orderId);
         model.addAttribute("orders", orders);
 
-        //주문 상품 조회
-        List<OrderItemTO> orderItem = updateItemDAO.getOrderByEmail(email);
-        model.addAttribute("orderItem", orderItem);
+        List<OrderItemTO> orderItems = updateItemDAO.getOrderByOrderId(orderId);
+        model.addAttribute("orderItem", orderItems);
 
         return "update";
     }
 
     @RequestMapping("/update_item_ok")
-    public String cafeTeam4_ok(HttpServletRequest request, Model model) {
-        System.out.println("Received email: " + request.getParameter("email"));
+    public String updateItemOk(HttpServletRequest request, Model model) {
+        System.out.println("Received order_id: " + request.getParameter("order_id"));
         System.out.println("Received address: " + request.getParameter("address"));
         System.out.println("Received zip_code: " + request.getParameter("zip_code"));
 
         OrdersTO orders = new OrdersTO();
-        orders.setEmail(request.getParameter("email"));
+        orders.setOrder_id(request.getParameter("order_id"));
         orders.setAddress(request.getParameter("address"));
         orders.setZip_code(request.getParameter("zip_code"));
 
-        model.addAttribute("email",orders.getEmail());
         model.addAttribute("flag", updateItemDAO.updateOrders(orders));
         return "update_ok";
     }
 
     @RequestMapping("/main")
-    public String check(){
+    public String check() {
         return "main";
     }
 }

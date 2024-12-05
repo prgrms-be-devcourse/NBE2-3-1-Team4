@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.cafe.mapper.UpdateItemMapper">
-    <!-- 이메일과 비밀번호로 사용자 검증 -->
-    <select id="validate" resultType="Orders">
-        SELECT email, password
-        FROM users
-        WHERE email = #{email} AND password = #{password}
-    </select>
-
-        <!-- 이메일로 사용자 정보 조회 -->
-    <select id="findUserByEmail" resultType="Orders">
-        SELECT email, address, zip_code  <!-- 'postcode' -> 'zip_code' -->
+    <!-- 주문 ID로 사용자 정보 조회 -->
+    <select id="findUserByOrderId" resultType="Orders">
+        SELECT order_id, email, address, zip_code
         FROM orders
-        WHERE email = #{email}
+        WHERE order_id = #{orderId}
     </select>
 
-    <!-- 이메일로 해당 주문 내역 조회 -->
-    <select id="findOrdersByEmail" resultType="OrderItem">
-        SELECT oi.order_item_id, i.name AS item_name, oi.orderCount, oi.orderPrice
+    <!-- 주문 ID로 주문 내역 조회 -->
+    <select id="findOrdersByOrderId" resultType="OrderItem">
+        SELECT
+            oi.order_item_id,
+            oi.order_id,
+            i.item_id,
+            i.name AS item_name,
+            oi.orderCount,
+            oi.orderPrice
         FROM orders o
                  JOIN orderItem oi ON o.order_id = oi.order_id
                  JOIN item i ON oi.item_id = i.item_id
-        WHERE o.email = #{email}
+        WHERE o.order_id = #{orderId}
     </select>
 
-    <!--상품 목록 조회  -->
+    <!--상품 목록 조회 -->
     <select id="findAllItems" resultType="Item">
-        SELECT item_id, name, price FROM item;
+        SELECT item_id, name, price
+        FROM item;
     </select>
 
+    <!-- 주문 정보 업데이트 -->
     <update id="updateOrders" parameterType="Orders">
         UPDATE orders
         SET address = #{address}, zip_code = #{zip_code}
-        WHERE email = #{email}
+        WHERE order_id = #{order_id}
     </update>
-
 </mapper>
