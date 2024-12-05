@@ -39,9 +39,9 @@ public class UpdateItemController {
         return "update_ok";
     }
 
-    @RequestMapping("/email_check")
+    @RequestMapping("/main")
     public String check(){
-        return "check";
+        return "main";
     }
 
 }
