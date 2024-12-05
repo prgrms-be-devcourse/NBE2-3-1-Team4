@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 
-//@Alias(value = "")
+@Alias( value = "to" )
 @Getter
 @Setter
 //@AllArgsConstructor

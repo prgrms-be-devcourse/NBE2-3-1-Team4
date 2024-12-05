@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.cafe.dto">
+<mapper namespace="com.example.cafe.item_search.mapper.ItemSearchMapper">
+
+    <select id="list" resultType="to">
+        select item_id, name, itemQuantity, price
+        from item
+        order by item_id desc
+    </select>
+
+    <select id="listPage" parameterType="map" resultType="to">
+        select item_id, name, itemQuantity, price
+        from item
+        order by item_id desc
+            limit #{limit} offset #{offset}
+    </select>
+
+
+    <select id="totalCount" resultType="int">
+        select count(*)
+        from item
+    </select>
 
 </mapper>
