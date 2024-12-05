@@ -19,6 +19,6 @@ public interface UpdateItemMapper {
     List<ItemTO> findAllItems();
 
     //주문자배송정보 업데이트
-    OrdersTO updateOrders(OrdersTO orders);
+    int updateOrders(OrdersTO orders);
 
 }

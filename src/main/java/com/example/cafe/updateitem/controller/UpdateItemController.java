@@ -4,6 +4,7 @@ import com.example.cafe.dao.UpdateItemDAO;
 import com.example.cafe.dto.ItemTO;
 import com.example.cafe.dto.OrderItemTO;
 import com.example.cafe.dto.OrdersTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +36,14 @@ public class UpdateItemController {
     }
 
     @RequestMapping("/update_item_ok")
-    public String cafeTeam4_ok() {
+    public String cafeTeam4_ok(HttpServletRequest request, Model model) {
+        OrdersTO orders = new OrdersTO();
+        orders.setEmail(request.getParameter("email"));
+        orders.setAddress(request.getParameter("address"));
+        orders.setZip_code(request.getParameter("zip_code"));
+
+        model.addAttribute("email",orders.getEmail());
+        model.addAttribute("flag", updateItemDAO.updateOrders(orders));
         return "update_ok";
     }
 
@@ -43,5 +51,4 @@ public class UpdateItemController {
     public String check(){
         return "main";
     }
-
 }

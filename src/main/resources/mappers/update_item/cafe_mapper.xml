@@ -29,9 +29,10 @@
         SELECT item_id, name, price FROM item;
     </select>
 
-    <update id="update_order" >
-        update orders
-        set address=#{address}, zip_code=#{zip_code}
-        where email=#{email}
+    <update id="updateOrders">
+        UPDATE orders
+        SET address = #{address}, zip_code = #{zip_code}
+        WHERE email = #{email}
     </update>
+
 </mapper>

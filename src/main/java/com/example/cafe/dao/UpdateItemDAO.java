@@ -25,4 +25,17 @@ public class UpdateItemDAO {
     public OrdersTO getUserByEmail(String email) {
         return updateItemMapper.findUserByEmail(email);
     }
+
+    // 주문자 배송 정보 업데이트
+    public int updateOrders(OrdersTO orders) {
+        int flag =2;
+        int result = updateItemMapper.updateOrders(orders);
+        if(result ==0){
+            flag =1;
+        }else if(result ==1){
+            flag =0;
+        }
+        return flag;
+    }
+
 }

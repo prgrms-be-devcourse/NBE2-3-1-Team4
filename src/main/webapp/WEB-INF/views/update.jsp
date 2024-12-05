@@ -3,6 +3,16 @@
 <%@ page import="com.example.cafe.dto.OrderItemTO" %>
 <%@ page import="com.example.cafe.dto.OrdersTO" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    OrdersTO orders = (OrdersTO) request.getAttribute("orders");
+    List<OrderItemTO> orderItems =(List<OrderItemTO>) request.getAttribute("orderItem");
+    List<ItemTO> items = (List<ItemTO>) request.getAttribute("items");
+
+    String email = orders.getEmail();
+    String address = orders.getAddress();
+    String zip_code = orders.getZip_code();
+
+%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -110,6 +120,19 @@
         badge.textContent = `${cartSummary[productName]}개`;
       }
     }
+        // 수정버튼 클릭시
+        document.getElementById('mbtn').onclick = function(){
+            if(document.mfrm.address.value == ''){
+                alert('주소를 입력하세요');
+                return false;
+            }
+            if(document.mfrm.zip_code.value == ''){
+                alert('우편번호를 입력하세요');
+                return false;
+            }
+            document.mfrm.submit();
+        };
+
   </script>
   <title>주문 목록</title>
 </head>
@@ -120,7 +143,6 @@
     <button class="btn btn-small btn-outline-info">주문조회</button>
   </div>
 </div>
-<form action="update_item_ok" method="post" name="mfrm" enctype="multipart/form-data">
 <div class="card">
   <div class="row">
     <div class="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
@@ -128,7 +150,6 @@
       <ul class="list-group products">
         <%
           // 상단에서 items 선언
-          List<ItemTO> items = (List<ItemTO>) request.getAttribute("items");
           for (ItemTO item : items) {
         %>
         <li class="list-group-item d-flex mt-3">
@@ -156,28 +177,7 @@
         <h5 class="m-0 p-0"><b>Summary</b></h5>
       </div>
       <hr>
-<%--      <%--%>
-<%--        List<OrderItemTO> orderItems = (List<OrderItemTO>) request.getAttribute("orderItem");--%>
-
-<%--        for (ItemTO item : items) { // 상단의 items 재사용--%>
-<%--          String itemQuantity = "0"; // 기본값은 0으로 설정--%>
-<%--          for (OrderItemTO orderItem : orderItems) {--%>
-<%--            if (orderItem.getItem() != null && orderItem.getItem().getItem_id().equals(item.getItem_id())) {--%>
-<%--              // item_id로 매칭 확인 (orderItem.getItem()이 null인지 확인)--%>
-<%--              itemQuantity = orderItem.getItemQuantity(); // 매칭되면 해당 수량 가져오기--%>
-<%--              break;--%>
-<%--            }--%>
-<%--      %>--%>
-<%--      <div class="row">--%>
-<%--        <h6 class="p-0"><%= item.getName() %> <span id="badge-<%= item.getName() %>" class="badge bg-dark"><%=orderItem.getItemQuantity() %></span></h6>--%>
-<%--      </div>--%>
-<%--      <%--%>
-<%--          }--%>
-<%--        }--%>
-<%--      %>--%>
-      <%-- 주문메뉴 상품없음으로 가져옴. --%>
       <%
-        List<OrderItemTO> orderItems =(List<OrderItemTO>) request.getAttribute("orderItem");
         for (OrderItemTO orderItem : orderItems) {
       %>
       <div class="row">
@@ -187,31 +187,27 @@
         }
       %>
 
-
-      <%-- 주문자 정보 출력 --%>
-      <%
-        OrdersTO orders = (OrdersTO) request.getAttribute("orders");
-      %>
-      <form>
+        <form action="/update_item_ok" method="post" name="mfrm">
+            <input type="hidden" name="email" value="<%=email %>">
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
-          <input type="text" class="form-control mb-1" id="address" value="<%= orders.getAddress() %>" >
+            <input type="text" class="form-control mb-1" id="address" name="address" value="<%= address %>">
         </div>
         <div class="mb-3">
           <label for="zip_code" class="form-label">우편번호</label>
-          <input type="text" class="form-control" id="zip_code" value="<%= orders.getZip_code() %>" >  <!-- 'postcode' -> 'zip_code' -->
+            <input type="text" class="form-control" id="zip_code" name="zip_code" value="<%= zip_code %>">
         </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
-      </form>
-      <div class="row pt-2 pb-2 border-top">
-        <h5 class="col">총금액</h5>
-        <h5 class="col text-end">0원</h5>
-      </div>
-      <button type="submit" class="btn btn-dark col-6" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
-      <button class="btn btn-dark col-5">주문취소</button>
+
+        <div class="row pt-2 pb-2 border-top">
+            <h5 class="col">총금액</h5>
+            <h5 class="col text-end">0원</h5>
+        </div>
+        <button type="submit" class="btn btn-dark col-6" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
+        <button class="btn btn-dark col-5">주문취소</button>
+        </form>
     </div>
   </div>
 </div>
-</form>
 </body>
 </html>
