@@ -5,7 +5,7 @@
     <select id="findUserByOrderId" resultType="Orders">
         SELECT order_id, email, address, zip_code
         FROM orders
-        WHERE order_id = #{orderId}
+        WHERE order_id = #{order_id}
     </select>
 
     <!-- 주문 ID로 주문 내역 조회 -->
@@ -20,7 +20,7 @@
         FROM orders o
                  JOIN orderItem oi ON o.order_id = oi.order_id
                  JOIN item i ON oi.item_id = i.item_id
-        WHERE o.order_id = #{orderId}
+        WHERE o.order_id = #{order_id} -- and oi.item_id=#{item_id}
     </select>
 
     <!--상품 목록 조회 -->
@@ -34,5 +34,12 @@
         UPDATE orders
         SET address = #{address}, zip_code = #{zip_code}
         WHERE order_id = #{order_id}
+    </update>
+
+    <update id="updateOrderCount" parameterType="map">
+        UPDATE orderItem oi
+            JOIN item i ON oi.item_id = i.item_id
+            SET oi.orderCount = #{orderCount}
+        WHERE oi.order_id = #{order_id} AND i.item_id = #{item_id};
     </update>
 </mapper>

@@ -17,7 +17,10 @@ public interface UpdateItemMapper {
 
     List<OrderItemTO> findOrdersByOrderId(String orderId);
 
+    //주문자 정보 update
     int updateOrders(OrdersTO ordersTO);
+    //개수 update
+    int updateOrderCount(OrderItemTO orderItem);
 
     // 상품 목록 조회
     List<ItemTO> findAllItems();

@@ -39,4 +39,15 @@ public class UpdateItemDAO {
         }
         return flag;
     }
+
+    public int updateOrderCount(OrderItemTO orderItem) {
+        int flag = 2;
+        int result = updateItemMapper.updateOrderCount(orderItem);
+        if(result == 0) {
+            flag = 1;
+        }else if(result == 1) {
+            flag = 0;
+        }
+        return flag;
+    }
 }

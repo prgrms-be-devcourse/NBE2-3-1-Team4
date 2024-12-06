@@ -231,7 +231,6 @@
       document.getElementById('totalPrice').textContent = `${'${total}'}원`;
     }
   }
-
 </script>
 </body>
 </html>

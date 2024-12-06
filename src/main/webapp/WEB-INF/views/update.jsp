@@ -19,8 +19,27 @@
   } else {
     out.println("order_id: " + orderId);
   }
+  StringBuilder jsonBuilder = new StringBuilder("[");
+  for(int i=0; i<items.size();i++){
+    ItemTO item = items.get(i);
+
+    jsonBuilder.append("{")
+            .append("\"name\": \"").append(item.getName()).append("\", ")
+            .append("\"count\": 0, ")
+            .append("\"price\": ").append(item.getPrice()).append(", ")
+            .append("\"id\": ").append(item.getItem_id())
+            .append("}");
+    if(i<items.size()-1){
+      jsonBuilder.append(", ");
+
+    }
+
+  }
+  jsonBuilder.append("]");
+  String jsonString = jsonBuilder.toString();
 
 %>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -94,53 +113,56 @@
     }
   </style>
   <!-- JavaScript -->
-  <script type="text/javascript">
+  <!-- JavaScript -->
+  <script>
+    // 총 가격 계산
+    let orderPrice = 0;
     // 제품 이름과 개수를 관리할 객체
-    const cartSummary = {
-      "Columbia Nariñó": 0,
-      "Brazil Serra Do Caparaó": 0,
-      "Ethiopia Yirgacheffe": 0,
-      "Guatemala Antigua": 0
-    };
+    const cartSummary = <%=jsonString%>
 
     // "추가" 버튼 클릭 시 실행되는 함수
     function addToCart(productName) {
+      //cartSummary에서 productName 찾기
+      const product = cartSummary.find(item => item.name === productName);
       // 개수 증가
-      cartSummary[productName]++;
+      product.count++;
 
       // UI 업데이트
-      const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+      const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
       if (badge) {
-        badge.textContent = `${cartSummary[productName]}개`;
+        badge.textContent = `${'${product.count}'}개`;
       }
+
+      orderPrice += product.price;
+      document.getElementById('orderPrice').textContent = `${'${orderPrice}'}원`;
+
+      // 콘솔에 count 값 출력
+      console.log(`${productName}' count: ${product.count}`);
     }
 
     // "삭제하기" 버튼 클릭 시 실행되는 함수
     function removeFromCart(productName) {
-      // 개수가 0 이하로 내려가지 않도록 처리
-      if (cartSummary[productName] > 0) {
-        cartSummary[productName]--;
-      }
+      //cartSummary에서 productName 찾기
+      const product = cartSummary.find(item => item.name === productName);
 
-      // UI 업데이트
-      const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
-      if (badge) {
-        badge.textContent = `${cartSummary[productName]}개`;
+      // 개수가 0 이하로 내려가지 않도록 처리
+      if (product.count > 0) {
+        product.count--;
+
+        // UI 업데이트
+        const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
+        if (badge) {
+          badge.textContent = `${'${product.count}'}개`;
+        }
+
+        orderPrice -= product.price;
+        document.getElementById('orderPrice').textContent = `${'${order}'}원`;
+
+        // 콘솔에 count 값 출력
+        console.log(`${productName} count: ${product.count}`);
+
       }
     }
-    // 수정버튼 클릭시
-    document.getElementById('mbtn').onclick = function(){
-      if(document.mfrm.address.value == ''){
-        alert('주소를 입력하세요');
-        return false;
-      }
-      if(document.mfrm.zip_code.value == ''){
-        alert('우편번호를 입력하세요');
-        return false;
-      }
-      document.mfrm.submit();
-    };
-
   </script>
   <title>주문 목록</title>
 </head>
@@ -152,6 +174,7 @@
   </div>
 </div>
 <div class="card">
+  <form action="update_item_ok" method="post" name="mfrm">
   <div class="row">
     <div class="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
       <h5 class="flex-grow-0"><b>상품 목록</b></h5>
@@ -181,31 +204,26 @@
     <%--      <input type="hidden" name="email" value="<%=email%>"/>--%>
     <%--주문 목록 & 주소 불러오기 --%>
     <div class="col-md-4 summary p-4">
+      <form action="update_item_ok" method="post" name="mfrm">
+        <input type="hidden" name="order_id" value="<%= orderId %>" />
       <div>
         <h5 class="m-0 p-0"><b>Summary</b></h5>
       </div>
       <hr>
       <%
         for (OrderItemTO orderItem : orderItems) {
+           for (ItemTO item : items) {
       %>
       <div class="row">
-        <h6 class="p-0"><%= orderItem.getItemName() %> <span id="badge-<%= orderItem.getItemName() %>" class="badge bg-dark"><%=orderItem.getItemQuantity()%></span></h6>
+        <h6 class="p-0"><%= item.getName() %> <span id="badge-<%= item.getName() %>" class="badge bg-dark"><%=orderItem.getOrderCount()%>개</span></h6>
       </div>
       <%
-        }
-      %>
-      <%
-        for (ItemTO item : items) {
-      %>
-      <div class="row">
-        <h6 class="p-0"><%= item.getName() %> <span id="badge-<%= item.getName() %>" class="badge bg-dark"><%=item.getItemQuantity()%></span></h6>
-      </div>
-      <%
+          }
         }
       %>
 
-      <form action="update_item_ok" method="post" name="mfrm">
-        <input type="hidden" name="order_id" value="<%= orderId %>">
+      <form>
+
         <div class="mb-3">
           <label type="hidden" for="order_id" class="form-label">주문번호</label>
           <input type="text" class="form-control mb-1" id="order_id" name="order_id" value="<%= orderId %>" readonly>
@@ -226,13 +244,14 @@
 
         <div class="row pt-2 pb-2 border-top">
           <h5 class="col">총금액</h5>
-          <h5 class="col text-end">0원</h5>
+          <h5 class="col text-end" id="orderPrice">0원</h5>
         </div>
         <button type="submit" class="btn btn-dark col-6" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
         <button class="btn btn-dark col-5">주문취소</button>
       </form>
     </div>
   </div>
+  </form>
 </div>
 </body>
 </html>
