@@ -97,7 +97,8 @@
     }
 
     #summaryList {
-      max-height: 60px; /* 최대 높이 설정 */
+      height: 60px; /* 기본 높이 설정 */
+      max-height: 60px; /* 최대 높이 설정 120px*/
       overflow-y: auto; /* 높이를 초과하면 스크롤바 활성화 */
       }
   </style>
@@ -173,19 +174,6 @@
         <hr>
         <div id="summaryList"></div>
       </div>
-<%--      <hr>--%>
-<%--      <div class="row">--%>
-<%--        <h6 class="p-0">아메리카노 <span id="badge-아메리카노" class="badge bg-dark">0개</span></h6>--%>
-<%--      </div>--%>
-<%--      <div class="row">--%>
-<%--        <h6 class="p-0">카푸치노 <span id="badge-카푸치노" class="badge bg-dark">0개</span></h6>--%>
-<%--      </div>--%>
-<%--      <div class="row">--%>
-<%--        <h6 class="p-0">치즈케이크 <span id="badge-치즈케이크" class="badge bg-dark">0개</span></h6>--%>
-<%--      </div>--%>
-<%--      <div class="row">--%>
-<%--        <h6 class="p-0">샌드위치 <span id="badge-샌드위치" class="badge bg-dark">0개</span></h6>--%>
-<%--      </div>--%>
       <form>
         <div class="mb-3">
           <label for="email" class="form-label">이메일</label>
@@ -307,28 +295,28 @@
 
 
     // 주문 JSON 생성
-    // const orderData = {
-    //   email,
-    //   password,
-    //   address,
-    //   postcode,
-    //   total,
-    //   cartSummary
-    // };
-
-    //test
     const orderData = {
-      email: "test@example.com",
-      password: "securePassword",
-      address: "123 Test St",
-      postcode: "12345",
+      email,
+      password,
+      address,
+      postcode,
       total,
       cartSummary
     };
-    orderData.cartSummary.forEach(item => {
-      item.price = item.count * item.price;
-    });
-    console.log(orderData);
+
+    //test
+    // const orderData = {
+    //   email: "test@example.com",
+    //   password: "securePassword",
+    //   address: "123 Test St",
+    //   postcode: "12345",
+    //   total,
+    //   cartSummary
+    // };
+    // orderData.cartSummary.forEach(item => {
+    //   item.price = item.count * item.price;
+    // });
+    // console.log(orderData);
 
     // POST 요청으로 JSON 데이터 전송
     fetch("/add_item", {
@@ -338,7 +326,7 @@
       },
       body: JSON.stringify(orderData)
     })
-            .then(response => response.json()) // JSON으로 응답 처리
+            .then(response => response.json())
             .then(flag => {
               if (flag === 1) {
                 alert("정상 등록되었습니다.");
