@@ -26,18 +26,18 @@
         sb.append("</div>");
         sb.append("</li>");
     }
-
+    ArrayList<ItemTO> allLists = (ArrayList<ItemTO>) request.getAttribute("allLists");
     // JSON 형식으로 변환
     StringBuilder jsonBuilder = new StringBuilder("[");
-    for (int i = 0; i < lists.size(); i++) {
-        ItemTO item = lists.get(i);
+    for (int i = 0; i < allLists.size(); i++) {
+        ItemTO item = allLists.get(i);
         jsonBuilder.append("{")
                 .append("\"name\": \"").append(item.getName()).append("\", ")
                 .append("\"count\": 0, ")
                 .append("\"price\": ").append(item.getPrice()).append(", ")
                 .append("\"id\": ").append(item.getItem_id())
                 .append("}");
-        if (i < lists.size() - 1) {
+        if (i < allLists.size() - 1) {
             jsonBuilder.append(", ");
         }
     }
@@ -343,7 +343,9 @@
             alert("주문할 상품을 선택해주세요.");
             return;
         }
-
+        // cartSummary JSON 데이터 파싱 및 count가 0인 항목 제거
+        // const filteredCart = JSON.parse(cartSummary).filter(item => item.count > 0);
+        const filteredCart = cartSummary.filter(item => item.count > 0);
 
         // 주문 JSON 생성
         const orderData = {
@@ -352,22 +354,8 @@
             address,
             postcode,
             total,
-            cartSummary
+            cartSummary: filteredCart
         };
-
-        //test
-        // const orderData = {
-        //   email: "test@example.com",
-        //   password: "securePassword",
-        //   address: "123 Test St",
-        //   postcode: "12345",
-        //   total,
-        //   cartSummary
-        // };
-        // orderData.cartSummary.forEach(item => {
-        //   item.price = item.count * item.price;
-        // });
-        // console.log(orderData);
 
         // POST 요청으로 JSON 데이터 전송
         fetch("/add_item", {
