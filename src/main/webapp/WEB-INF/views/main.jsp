@@ -1,4 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.example.cafe.dto.ItemTO" %>
+<%
+  ArrayList<ItemTO> lists = (ArrayList<ItemTO>) request.getAttribute("lists");
+//  System.out.println(lists);
+
+  // JSON 형식으로 변환
+  StringBuilder jsonBuilder = new StringBuilder("[");
+  for (int i = 0; i < lists.size(); i++) {
+    ItemTO item = lists.get(i);
+    jsonBuilder.append("{")
+            .append("\"name\": \"").append(item.getName()).append("\", ")
+            .append("\"count\": 0, ")
+            .append("\"price\": ").append(item.getPrice()).append(", ")
+            .append("\"id\": ").append(item.getItem_id())
+            .append("}");
+    if (i < lists.size() - 1) {
+      jsonBuilder.append(", ");
+    }
+  }
+  jsonBuilder.append("]");
+  String jsonString = jsonBuilder.toString();
+%>
+
 
 <!doctype html>
 <html lang="en">
@@ -71,6 +95,11 @@
     .products .action {
       line-height: 38px;
     }
+
+    #summaryList {
+      max-height: 60px; /* 최대 높이 설정 */
+      overflow-y: auto; /* 높이를 초과하면 스크롤바 활성화 */
+      }
   </style>
   <title>상품 목록</title>
 </head>
@@ -95,8 +124,8 @@
           </div>
           <div class="col text-center price">5000원</div>
           <div class="col text-end action">
-            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Columbia Nariñó')">추가</a>
-            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Columbia Nariñó')">삭제</a>
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('아메리카노')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('아메리카노')">삭제</a>
           </div>
         </li>
         <li class="list-group-item d-flex mt-2">
@@ -107,8 +136,8 @@
           </div>
           <div class="col text-center price">6000원</div>
           <div class="col text-end action">
-            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Brazil Serra Do Caparaó')">추가</a>
-            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Brazil Serra Do Caparaó')">삭제</a>
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('카푸치노')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('카푸치노')">삭제</a>
           </div>
         </li>
         <li class="list-group-item d-flex mt-2">
@@ -119,8 +148,8 @@
           </div>
           <div class="col text-center price">7000원</div>
           <div class="col text-end action">
-            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Ethiopia Yirgacheffe')">추가</a>
-            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Ethiopia Yirgacheffe')">삭제</a>
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('치즈케이크')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('치즈케이크')">삭제</a>
           </div>
         </li>
         <li class="list-group-item d-flex mt-2">
@@ -131,29 +160,32 @@
           </div>
           <div class="col text-center price">8000원</div>
           <div class="col text-end action">
-            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Guatemala Antigua')">추가</a>
-            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Guatemala Antigua')">삭제</a>
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('샌드위치')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('샌드위치')">삭제</a>
           </div>
         </li>
       </ul>
     </div>
     <div class="col-md-4 summary p-4">
+      <!-- 영수증 -->
       <div>
         <h5 class="m-0 p-0"><b>Summary</b></h5>
+        <hr>
+        <div id="summaryList"></div>
       </div>
-      <hr>
-      <div class="row">
-        <h6 class="p-0">Columbia Nariñó <span id="badge-Columbia Nariñó" class="badge bg-dark">0개</span></h6>
-      </div>
-      <div class="row">
-        <h6 class="p-0">Brazil Serra Do Caparaó <span id="badge-Brazil Serra Do Caparaó" class="badge bg-dark">0개</span></h6>
-      </div>
-      <div class="row">
-        <h6 class="p-0">Ethiopia Yirgacheffe <span id="badge-Ethiopia Yirgacheffe" class="badge bg-dark">0개</span></h6>
-      </div>
-      <div class="row">
-        <h6 class="p-0">Guatemala Antigua <span id="badge-Guatemala Antigua" class="badge bg-dark">0개</span></h6>
-      </div>
+<%--      <hr>--%>
+<%--      <div class="row">--%>
+<%--        <h6 class="p-0">아메리카노 <span id="badge-아메리카노" class="badge bg-dark">0개</span></h6>--%>
+<%--      </div>--%>
+<%--      <div class="row">--%>
+<%--        <h6 class="p-0">카푸치노 <span id="badge-카푸치노" class="badge bg-dark">0개</span></h6>--%>
+<%--      </div>--%>
+<%--      <div class="row">--%>
+<%--        <h6 class="p-0">치즈케이크 <span id="badge-치즈케이크" class="badge bg-dark">0개</span></h6>--%>
+<%--      </div>--%>
+<%--      <div class="row">--%>
+<%--        <h6 class="p-0">샌드위치 <span id="badge-샌드위치" class="badge bg-dark">0개</span></h6>--%>
+<%--      </div>--%>
       <form>
         <div class="mb-3">
           <label for="email" class="form-label">이메일</label>
@@ -187,14 +219,10 @@
 <script>
   // 총 가격 계산
   let total = 0;
-  // 제품 이름과 개수를 관리할 객체
-  const cartSummary = [
-    { name: "Columbia Nariñó", count: 0, price: 5000 },
-    { name: "Brazil Serra Do Caparaó", count: 0, price: 6000 },
-    { name: "Ethiopia Yirgacheffe", count: 0, price: 7000 },
-    { name: "Guatemala Antigua", count: 0, price: 8000 }
-  ];
 
+  // 제품 이름과 개수
+  const cartSummary = <%= jsonString %>;
+  console.log(cartSummary);
   // "추가" 버튼 클릭 시 실행되는 함수
   function addToCart(productName) {
     //cartSummary에서 productName 찾기
@@ -202,10 +230,25 @@
     // 개수 증가
     product.count++;
 
-    // UI 업데이트
-    const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
-    if (badge) {
-      badge.textContent = `${'${product.count}'}개`;
+    const summaryList = document.getElementById("summaryList");
+    let itemElement = document.querySelector(`#summary-${'${CSS.escape(productName)}'}`);
+
+    if (!itemElement) {
+      // 항목이 없으면 추가
+      itemElement = document.createElement("div");
+      itemElement.classList.add("row");
+      itemElement.id = `summary-${'${CSS.escape(productName)}'}`; // 안전한 ID 사용
+      itemElement.innerHTML = `
+      <h6 class="p-0 col">${'${productName}'}</h6>
+      <h6 class="p-0 col text-end">
+        <span id="badge-${'${CSS.escape(productName)}'}" class="badge bg-dark">${'${product.count}'}개</span>
+      </h6>
+    `;
+      summaryList.appendChild(itemElement);
+    } else {
+      // 항목이 이미 있으면 업데이트
+      const badgeElement = itemElement.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
+      badgeElement.textContent = `${'${product.count}'}개`;
     }
 
     total += product.price;
@@ -217,14 +260,14 @@
     //cartSummary에서 productName 찾기
     const product = cartSummary.find(item => item.name === productName);
 
-    // 개수가 0 이하로 내려가지 않도록 처리
     if (product.count > 0) {
       product.count--;
-
-      // UI 업데이트
-      const badge = document.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
-      if (badge) {
-        badge.textContent = `${'${product.count}'}개`;
+      const itemElement = document.getElementById(`summary-${'${CSS.escape(productName)}'}`);
+      if (product.count > 0) {
+        const badgeElement = itemElement.querySelector(`#badge-${'${CSS.escape(productName)}'}`);
+        badgeElement.textContent = `${'${product.count}'}개`;
+      } else {
+        itemElement.remove();
       }
 
       total -= product.price;
@@ -240,17 +283,74 @@
     const address = document.getElementById("address").value;
     const postcode = document.getElementById("postcode").value;
 
+    // 필수 입력값 확인
+    if (!email) {
+      alert("이메일을 입력해주세요.");
+      return;
+    }
+    if (!password) {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    if (!address) {
+      alert("주소를 입력해주세요.");
+      return;
+    }
+    if (!postcode) {
+      alert("우편번호를 입력해주세요.");
+      return;
+    }
+    if (total === 0) {
+      alert("주문할 상품을 선택해주세요.");
+      return;
+    }
+
+
     // 주문 JSON 생성
+    // const orderData = {
+    //   email,
+    //   password,
+    //   address,
+    //   postcode,
+    //   total,
+    //   cartSummary
+    // };
+
+    //test
     const orderData = {
-      email,
-      password,
-      address,
-      postcode,
+      email: "test@example.com",
+      password: "securePassword",
+      address: "123 Test St",
+      postcode: "12345",
       total,
       cartSummary
     };
+    orderData.cartSummary.forEach(item => {
+      item.price = item.count * item.price;
+    });
     console.log(orderData);
 
+    // POST 요청으로 JSON 데이터 전송
+    fetch("/add_item", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(orderData)
+    })
+            .then(response => response.json()) // JSON으로 응답 처리
+            .then(flag => {
+              if (flag === 1) {
+                alert("정상 등록되었습니다.");
+              } else {
+                alert("등록 실패하였습니다.");
+              }
+            })
+            .catch(error => {
+              console.error("에러 발생:", error);
+              alert("오류가 발생하였습니다.");
+            });
+    console.log(orderData);
   }
 </script>
 </body>

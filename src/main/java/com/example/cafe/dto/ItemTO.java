@@ -1,9 +1,6 @@
 package com.example.cafe.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.apache.ibatis.type.Alias;
 
 //@Alias(value = "")
@@ -11,6 +8,7 @@ import org.apache.ibatis.type.Alias;
 @Setter
 //@AllArgsConstructor
 //@NoArgsConstructor
+@ToString
 public class ItemTO {
     private String item_id;
     private String name;
