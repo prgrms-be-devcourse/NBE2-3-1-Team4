@@ -1,11 +1,30 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.cafe.dto.ItemTO" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    //jstl 테스트 jsp 파일
-
     ArrayList<ItemTO> lists = (ArrayList<ItemTO>) request.getAttribute("lists");
+    int pages = (int) request.getAttribute("page");
+    int totalPages = (int) request.getAttribute("totalPages");
+
+    StringBuilder sb = new StringBuilder();
+
+    for (ItemTO list : lists) {
+        String name = list.getName();
+        String price = list.getPrice();
+
+        sb.append("<li class=\"list-group-item d-flex mt-2\">");
+        sb.append("<div class=\"col-2\"><img class=\"img-fluid\" src=\"https://i.imgur.com/HKOFQYa.jpeg\" alt=\"\"></div>");
+        sb.append("<div class=\"col\">");
+        sb.append("<div class=\"row text-muted\">커피콩</div>");
+        sb.append("<div class=\"row\">" + name + "</div>");
+        sb.append("</div>");
+        sb.append("<div class=\"col text-center price\">" + price + "원</div>");
+        sb.append("<div class=\"col text-end action\">");
+        sb.append("<a class=\"btn btn-sm btn-outline-dark me-2\" href=\"javascript:void(0)\" onclick=\"addToCart('" + name + "')\">추가</a>");
+        sb.append("<a class=\"btn btn-sm btn-outline-danger\" href=\"javascript:void(0)\" onclick=\"removeFromCart('" + name + "')\">삭제</a>");
+        sb.append("</div>");
+        sb.append("</li>");
+    }
 %>
 <!doctype html>
 <html lang="en">
@@ -31,51 +50,11 @@
             border: transparent;
         }
 
-        .summary {
-            background-color: #ddd;
-            border-top-right-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-            padding: 4vh;
-            color: rgb(65, 65, 65);
-        }
-
-        @media (max-width: 767px) {
-            .summary {
-                border-top-right-radius: unset;
-                border-bottom-left-radius: 1rem;
-            }
-        }
-
-        .row {
-            margin: 0;
-        }
-
-        .title b {
-            font-size: 1.5rem;
-        }
-
-        .col-2,
-        .col {
-            padding: 0 1vh;
-        }
-
-        img {
-            width: 3.5rem;
-        }
-
-        hr {
-            margin-top: 1.25rem;
-        }
-
         .products {
             width: 100%;
         }
 
         .products .price, .products .action {
-            line-height: 38px;
-        }
-
-        .products .action {
             line-height: 38px;
         }
     </style>
@@ -84,34 +63,34 @@
 <body class="container-fluid">
 <div class="row justify-content-center m-4 align-items-center">
     <h1 class="text-center col">상품 목록</h1>
-    <div class="col-auto">
-        <button class="btn btn-small btn-outline-info">주문조회</button>
-        <button class="btn btn-small btn-outline-danger">삭제하기</button>
-    </div>
 </div>
 <div class="card">
     <div class="row">
         <div class="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
             <h5 class="flex-grow-0"><b>상품 목록</b></h5>
             <ul class="list-group products">
-                <!-- JSTL로 반복문 처리 -->
-
-                <c:forEach var="item" items="${lists}">
-                    <li class="list-group-item d-flex mt-2">
-                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/HKOFQYa.jpeg" alt=""></div>
-                        <div class="col">
-                            <div class="row text-muted">커피콩</div>
-                            <div class="row">${item.name}</div>
-                        </div>
-                        <div class="col text-center price">${item.price}원</div>
-                        <div class="col text-end action">
-                            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('${item.name}')">추가</a>
-                            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('${item.name}')">삭제</a>
-                        </div>
-                    </li>
-                </c:forEach>
-
+                <%= sb.toString() %>
             </ul>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination mt-4">
+                    <% if (pages > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= pages - 1 %>">이전</a>
+                    </li>
+                    <% } %>
+                    <% for (int i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= (i == pages) ? "active" : "" %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                    <% } %>
+                    <% if (pages < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= pages + 1 %>">다음</a>
+                    </li>
+                    <% } %>
+                </ul>
+            </nav>
         </div>
         <div class="col-md-4 summary p-4">
             <div>
@@ -119,7 +98,7 @@
             </div>
             <hr>
             <div class="row">
-                <h6 class="p-0">Columbia Nariñó <span id="badge-Columbia Nariñó" class="badge bg-dark">0개</span></h6>
+                <h6 class="p-0">Columbia Nariño <span id="badge-Columbia Nariño" class="badge bg-dark">0개</span></h6>
             </div>
             <div class="row">
                 <h6 class="p-0">Brazil Serra Do Caparaó <span id="badge-Brazil Serra Do Caparaó" class="badge bg-dark">0개</span></h6>
@@ -157,36 +136,5 @@
         </div>
     </div>
 </div>
-
-<!-- JavaScript -->
-<script>
-    // 제품 이름과 개수를 관리할 객체
-    const cartSummary = {
-        "Columbia Nariñó": 0,
-        "Brazil Serra Do Caparaó": 0,
-        "Ethiopia Yirgacheffe": 0,
-        "Guatemala Antigua": 0
-    };
-
-    // "추가" 버튼 클릭 시 실행되는 함수
-    function addToCart(productName) {
-        cartSummary[productName]++;
-        const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
-        if (badge) {
-            badge.textContent = `${cartSummary[productName]}개`;
-        }
-    }
-
-    // "삭제하기" 버튼 클릭 시 실행되는 함수
-    function removeFromCart(productName) {
-        if (cartSummary[productName] > 0) {
-            cartSummary[productName]--;
-        }
-        const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
-        if (badge) {
-            badge.textContent = `${cartSummary[productName]}개`;
-        }
-    }
-</script>
 </body>
 </html>
