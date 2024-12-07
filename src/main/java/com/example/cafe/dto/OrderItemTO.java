@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-//@Alias(value = "")
+import java.util.List;
+
 @Getter
 @Setter
 //@AllArgsConstructor
@@ -16,4 +17,17 @@ public class OrderItemTO {
     private String item_id;
     private String orderCount;
     private String orderPrice;
+
+
+    //private List<ItemTO> item;
+    private ItemTO item;
+    private List<OrderItemTO> order;
+    public String getItemName(){
+        return item != null ? item.getName() : "상품없음";
+    }
+
+    public String getItemQuantity(){
+        return orderCount != null ? orderCount : "0";
+    }
+
 }

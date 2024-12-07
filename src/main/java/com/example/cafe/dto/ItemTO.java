@@ -3,7 +3,9 @@ package com.example.cafe.dto;
 import lombok.*;
 import org.apache.ibatis.type.Alias;
 
-//@Alias(value = "")
+import java.util.List;
+
+@Alias(value = "Item")
 @Getter
 @Setter
 //@AllArgsConstructor
@@ -14,4 +16,7 @@ public class ItemTO {
     private String name;
     private String itemQuantity;
     private String price;
+
 }
+
+
