@@ -73,7 +73,7 @@ public class UpdateItemController {
     }
 
     @RequestMapping("/main")
-    public String check() {
+    public String mainPage() {
         return "main";
     }
 }
