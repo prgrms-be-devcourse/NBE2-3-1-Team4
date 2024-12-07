@@ -1,5 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.cafe.dto">
+<mapper namespace="com.example.cafe.mapper.OrdersMapper">
 
+    <select id="findOrdersByEmailAndPassword" parameterType="String" resultType="to">
+        select order_id, email, address, order_date, orderStatus, zip_code
+        from orders
+        where email=#{email} and password=password(#{password})
+    </select>
+
+    <select id="findOrdersCountByEmail" parameterType="String" resultType="int">
+        select count(order_id)
+        from orders
+        where email=#{email}
+    </select>
+
+    <select id="findOrdersByOrderId" parameterType="String" resultType="to">
+        select order_id, order_date, address, orderStatus, zip_code
+        from orders
+        where order_id=#{order_id}
+    </select>
+
+    <select id="findDeleteOrders" parameterType="String" resultType="to">
+        select order_id, order_date, orderStatus
+        from orders
+        where order_id=#{order_id}
+    </select>
+
+    <resultMap id="OrderResultMap" type="com.example.cafe.dto.OrdersTO">
+        <id property="order_id" column="order_id"/>
+        <result property="order_date" column="order_date"/>
+        <result property="orderStatus" column="orderStatus"/>
+        <result property="zip_code" column="zip_code"/>
+        <result property="address" column="address"/>
+
+        <!-- OrderItem 리스트 매핑 -->
+        <collection property="orderItems" ofType="com.example.cafe.dto.OrderItemTO">
+            <id property="order_item_id" column="order_item_id"/>
+            <result property="item_id" column="item_id"/>
+            <result property="orderCount" column="orderCount"/>
+            <result property="orderPrice" column="orderPrice"/>
+        </collection>
+
+        <!-- Item 리스트 매핑 -->
+        <collection property="items" ofType="com.example.cafe.dto.ItemTO">
+            <id property="item_id" column="item_id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findOrdersWithItems" resultMap="OrderResultMap">
+        SELECT
+            o.order_id,
+            o.order_date,
+            o.orderStatus,
+            o.zip_code,
+            o.address,
+            oi.order_item_id,
+            oi.item_id,
+            oi.orderCount,
+            oi.orderPrice,
+            i.name
+        FROM
+            orders o
+            JOIN
+            orderItem oi ON o.order_id = oi.order_id
+                JOIN
+            item i ON oi.item_id = i.item_id
+        WHERE
+            o.email=#{email}
+    </select>
+
+<delete id="deleteOkOrders" parameterType="to">
+    delete from orders
+    where order_id=#{order_id}
+</delete>
 </mapper>
