@@ -3,7 +3,7 @@
          pageEncoding="UTF-8"%>
 <%
   OrdersTO ordersTO = (OrdersTO)request.getAttribute("orderTo");
-  String orderId = ordersTO.getOrder_id();
+  int orderId = ordersTO.getOrder_id();
 
   String email = (String)request.getAttribute("email");
   String address = ordersTO.getAddress();

@@ -17,4 +17,10 @@ public interface AddItemMapper {
     ArrayList<ItemTO> list(); // list.merge !
     List<ItemTO> listPage(Map<String, Object> params); // 수정
     int totalCount();
+
+    List<OrdersTO> findOrdersByEmailAndPassword(String email, String password);
+    int findOrdersCountByEmail(String email);
+    List<OrdersTO> findOrdersWithItems(String email);
+    OrdersTO findOrdersByOrderId(int orderId);
+    int deleteOkOrders(OrdersTO ordersTO);
 }

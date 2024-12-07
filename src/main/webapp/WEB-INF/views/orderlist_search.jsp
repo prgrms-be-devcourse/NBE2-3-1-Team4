@@ -7,7 +7,7 @@
     String email = (String) request.getAttribute("email");
 
     StringBuilder sbHtml = new StringBuilder();
-    String orderId = null;
+    int orderId=0;
     for (OrdersTO ordersTO : orders) {
         boolean isDisabled = ordersTO.getOrderStatus().equals("afterDelivery");
         orderId = ordersTO.getOrder_id();

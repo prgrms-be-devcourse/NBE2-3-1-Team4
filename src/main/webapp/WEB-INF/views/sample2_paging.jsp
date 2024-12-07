@@ -126,6 +126,9 @@
 <body class="container-fluid">
 <div class="row justify-content-center m-4 align-items-center">
     <h1 class="text-center col">상품 목록</h1>
+    <div class="col-auto">
+        <button class="btn btn-small btn-outline-info" onclick="location.href='login.do'">주문조회</button>
+    </div>
 </div>
 <div class="card">
     <div class="row">
