@@ -2,15 +2,17 @@ package com.example.cafe.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.ibatis.type.Alias;
+import lombok.ToString;
 
 import java.util.List;
 
-@Alias(value = "OrderItem")
 @Getter
 @Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
+@ToString
 public class OrderItemTO {
-    private String order_item_id;
+    private int order_item_id;
     private String order_id;
     private String item_id;
     private String orderCount;

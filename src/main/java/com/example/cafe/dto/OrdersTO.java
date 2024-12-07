@@ -1,22 +1,25 @@
 package com.example.cafe.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
+
 import org.apache.ibatis.type.Alias;
 
-@Alias(value = "Orders")
+import java.util.List;
+
 @Getter
 @Setter
 //@AllArgsConstructor
 //@NoArgsConstructor
+@ToString
 public class OrdersTO {
-    private String order_id;
-    private String order_date;
-    private String orderStatus;
+    private int order_id;
     private String email;
-    private String password;
     private String address;
     private String zip_code;
+    private List<OrderItemTO> orderItems;
+    private List<ItemTO> items;
+    private String password;
+    private String order_date;
+    private String orderStatus;
 }

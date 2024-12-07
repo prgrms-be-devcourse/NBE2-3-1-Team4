@@ -1,38 +1,23 @@
-
+<%@ page import="com.example.cafe.dto.OrdersTO" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
+<%
+  OrdersTO ordersTO = (OrdersTO)request.getAttribute("orderTo");
+  int orderId = ordersTO.getOrder_id();
+
+  String email = (String)request.getAttribute("email");
+  String address = ordersTO.getAddress();
+  String zipCode = ordersTO.getZip_code();
+
+  /*for (int i=0; i<ordersTO.getItems().size(); i++) {
+    String itemName = ordersTO.getItems().get(i).getName();
+    String orderCount = ordersTO.getOrderItems().get(i).getOrderCount();
+    String orderPrice = ordersTO.getOrderItems().get(i).getOrderPrice();
+    System.out.println("itemName: " + itemName + "   orderCount: " + orderCount+ "   orderPrice"+ orderPrice);
+  }*/
+%>
 <!DOCTYPE html>
 <html lang="ko">
-
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="com.example.cafe.dto.ItemTO" %>
-<%
-  ArrayList<ItemTO> lists = (ArrayList<ItemTO>) request.getAttribute("lists");
-//  System.out.println(lists);
-
-  // JSON 형식으로 변환
-  StringBuilder jsonBuilder = new StringBuilder("[");
-  for (int i = 0; i < lists.size(); i++) {
-    ItemTO item = lists.get(i);
-    jsonBuilder.append("{")
-            .append("\"name\": \"").append(item.getName()).append("\", ")
-            .append("\"count\": 0, ")
-            .append("\"price\": ").append(item.getPrice()).append(", ")
-            .append("\"id\": ").append(item.getItem_id())
-            .append("}");
-    if (i < lists.size() - 1) {
-      jsonBuilder.append(", ");
-    }
-  }
-  jsonBuilder.append("]");
-  String jsonString = jsonBuilder.toString();
-%>
-
-
-<!doctype html>
-<html lang="en">
-
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -98,16 +83,65 @@
     .products .price, .products .action {
       line-height: 38px;
     }
+
+    .products .action {
+      line-height: 38px;
+    }
   </style>
-  <title>상품 목록</title>
+  <!-- JavaScript -->
+  <script>
+    // 주문 삭제 루틴
+    window.onload = function () {
+      document.getElementById( 'dtn_cancelorder' ).onclick = function () {
+        if (confirm("주문을 취소 하시겠습니까?")) {
+          const form = document.getElementById('myForm');
+          form.id = "deleteForm" + <%= orderId%>;
+          form.action = "/delete_item_ok.do"; // action을 동적으로 변경
+          form.submit();        // 폼 제출
+        } else {
+          alert("주문 취소 요청이 취소 되었습니다.");
+        }
+      };
+    };
+    // 제품 이름과 개수를 관리할 객체
+    const cartSummary = {
+      "Columbia Nariñó": 0,
+      "Brazil Serra Do Caparaó": 0,
+      "Ethiopia Yirgacheffe": 0,
+      "Guatemala Antigua": 0
+    };
+
+    // "추가" 버튼 클릭 시 실행되는 함수
+    function addToCart(productName) {
+      // 개수 증가
+      cartSummary[productName]++;
+
+      // UI 업데이트
+      const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+      if (badge) {
+        badge.textContent = `${cartSummary[productName]}개`;
+      }
+    }
+
+    // "삭제하기" 버튼 클릭 시 실행되는 함수
+    function removeFromCart(productName) {
+      // 개수가 0 이하로 내려가지 않도록 처리
+      if (cartSummary[productName] > 0) {
+        cartSummary[productName]--;
+      }
+
+      // UI 업데이트
+      const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+      if (badge) {
+        badge.textContent = `${cartSummary[productName]}개`;
+      }
+    }
+  </script>
+  <title>주문 목록</title>
 </head>
 <body class="container-fluid">
 <div class="row justify-content-center m-4 align-items-center">
   <h1 class="text-center col">상품 목록</h1>
-  <div class="col-auto">
-    <button class="btn btn-small btn-outline-info">주문조회</button>
-    <button class="btn btn-small btn-outline-danger">삭제하기</button>
-  </div>
 </div>
 <div class="card">
   <div class="row">
@@ -165,7 +199,6 @@
       </ul>
     </div>
     <div class="col-md-4 summary p-4">
-      <!-- 영수증 -->
       <div>
         <h5 class="m-0 p-0"><b>Summary</b></h5>
       </div>
@@ -182,61 +215,32 @@
       <div class="row">
         <h6 class="p-0">Guatemala Antigua <span id="badge-Guatemala Antigua" class="badge bg-dark">0개</span></h6>
       </div>
-      <form>
+      <form id="myForm" method="post">
+        <input type="hidden" name="orderId" value="<%= orderId %>" />
         <div class="mb-3">
-          <label for="email" class="form-label">이메일</label>
-          <input type="email" class="form-control mb-1" id="email">
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">비밀번호</label>
-          <input type="text" class="form-control" id="password">
+          <label for="email" class="form-label" >이메일</label>
+          <input type="email" class="form-control mb-1" id="email" readonly="readonly" value="<%=email%>" />
         </div>
         <div class="mb-3">
           <label for="address" class="form-label">주소</label>
-          <input type="text" class="form-control mb-1" id="address">
+          <input type="text" class="form-control mb-1" id="address" value="<%= address %>" />
         </div>
         <div class="mb-3">
           <label for="postcode" class="form-label">우편번호</label>
-          <input type="text" class="form-control" id="postcode">
+          <input type="text" class="form-control" id="postcode" value="<%= zipCode %>">
         </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
       </form>
       <div class="row pt-2 pb-2 border-top">
         <h5 class="col">총금액</h5>
+        <h5 class="col text-end">0원</h5>
       </div>
-      <button class="btn btn-dark col-12" id="checkoutButton" onclick="checkoutOrder()">결제하기</button>
+      <button class="btn btn-dark col-6">주문수정</button>
+      <button class="btn btn-dark col-5" id="dtn_cancelorder">주문취소</button>
     </div>
   </div>
 </div>
 
-<!-- JavaScript -->
-<script>
 
-  // "추가" 버튼 클릭 시 실행되는 함수
-  function addToCart(productName) {
-    //cartSummary에서 productName 찾기
-    const product = cartSummary.find(item => item.name === productName);
-    // 개수 증가
-    product.count++;
-
-
-    }
-
-    total += product.price;
-    document.getElementById('totalPrice').textContent = `${'${total}'}원`;
-
-  }
-
-  // "삭제하기" 버튼 클릭 시 실행되는 함수
-  function removeFromCart(productName) {
-
-      }
-
-      total -= product.price;
-      document.getElementById('totalPrice').textContent = `${'${total}'}원`;
-    }
-  }
-
-</script>
 </body>
 </html>

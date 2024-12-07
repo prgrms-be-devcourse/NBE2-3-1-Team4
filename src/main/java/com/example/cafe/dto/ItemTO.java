@@ -1,9 +1,6 @@
 package com.example.cafe.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.apache.ibatis.type.Alias;
 
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.List;
 @Setter
 //@AllArgsConstructor
 //@NoArgsConstructor
+@ToString
 public class ItemTO {
     private String item_id;
     private String name;
