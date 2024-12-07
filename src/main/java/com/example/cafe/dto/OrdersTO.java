@@ -1,9 +1,14 @@
 package com.example.cafe.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.*;
+
 import org.apache.ibatis.type.Alias;
 
-//@Alias(value = "")
+import java.util.List;
+
+@Alias(value = "to")
 @Getter
 @Setter
 //@AllArgsConstructor
@@ -14,6 +19,8 @@ public class OrdersTO {
     private String email;
     private String address;
     private String zip_code;
+    private List<OrderItemTO> orderItems;
+    private List<ItemTO> items;
     private String password;
     private String order_date;
     private String orderStatus;

@@ -1,3 +1,9 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.cafe.dto.ItemTO" %>
@@ -26,6 +32,7 @@
 
 <!doctype html>
 <html lang="en">
+
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -96,6 +103,7 @@
       line-height: 38px;
     }
 
+
     #summaryList {
       height: 60px; /* 기본 높이 설정 */
       max-height: 60px; /* 최대 높이 설정 120px*/
@@ -108,6 +116,7 @@
 <div class="row justify-content-center m-4 align-items-center">
   <h1 class="text-center col">상품 목록</h1>
   <div class="col-auto">
+    <button class="btn btn-small btn-outline-info" onclick="location.href='login.do'">주문조회</button>
     <button class="btn btn-small btn-outline-info">주문조회</button>
     <button class="btn btn-small btn-outline-danger">삭제하기</button>
   </div>
@@ -125,6 +134,8 @@
           </div>
           <div class="col text-center price">5000원</div>
           <div class="col text-end action">
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Columbia Nariñó')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Columbia Nariñó')">삭제</a>
             <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('아메리카노')">추가</a>
             <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('아메리카노')">삭제</a>
           </div>
@@ -137,6 +148,8 @@
           </div>
           <div class="col text-center price">6000원</div>
           <div class="col text-end action">
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Brazil Serra Do Caparaó')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Brazil Serra Do Caparaó')">삭제</a>
             <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('카푸치노')">추가</a>
             <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('카푸치노')">삭제</a>
           </div>
@@ -149,6 +162,8 @@
           </div>
           <div class="col text-center price">7000원</div>
           <div class="col text-end action">
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Ethiopia Yirgacheffe')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Ethiopia Yirgacheffe')">삭제</a>
             <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('치즈케이크')">추가</a>
             <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('치즈케이크')">삭제</a>
           </div>
@@ -161,6 +176,8 @@
           </div>
           <div class="col text-center price">8000원</div>
           <div class="col text-end action">
+            <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('Guatemala Antigua')">추가</a>
+            <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('Guatemala Antigua')">삭제</a>
             <a class="btn btn-sm btn-outline-dark me-2" href="javascript:void(0)" onclick="addToCart('샌드위치')">추가</a>
             <a class="btn btn-sm btn-outline-danger" href="javascript:void(0)" onclick="removeFromCart('샌드위치')">삭제</a>
           </div>
@@ -171,6 +188,19 @@
       <!-- 영수증 -->
       <div>
         <h5 class="m-0 p-0"><b>Summary</b></h5>
+      </div>
+      <hr>
+      <div class="row">
+        <h6 class="p-0">Columbia Nariñó <span id="badge-Columbia Nariñó" class="badge bg-dark">0개</span></h6>
+      </div>
+      <div class="row">
+        <h6 class="p-0">Brazil Serra Do Caparaó <span id="badge-Brazil Serra Do Caparaó" class="badge bg-dark">0개</span></h6>
+      </div>
+      <div class="row">
+        <h6 class="p-0">Ethiopia Yirgacheffe <span id="badge-Ethiopia Yirgacheffe" class="badge bg-dark">0개</span></h6>
+      </div>
+      <div class="row">
+        <h6 class="p-0">Guatemala Antigua <span id="badge-Guatemala Antigua" class="badge bg-dark">0개</span></h6>
         <hr>
         <div id="summaryList"></div>
       </div>
@@ -181,6 +211,7 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">비밀번호</label>
+          <input type="text" class="form-control" id="postcode">
           <input type="text" class="form-control" id="password">
         </div>
         <div class="mb-3">
@@ -195,8 +226,8 @@
       </form>
       <div class="row pt-2 pb-2 border-top">
         <h5 class="col">총금액</h5>
+        <h5 class="col text-end">0원</h5>
         <h5 class="col text-end" id="totalPrice">0원</h5>
-
       </div>
       <button class="btn btn-dark col-12" id="checkoutButton" onclick="checkoutOrder()">결제하기</button>
     </div>
@@ -205,6 +236,24 @@
 
 <!-- JavaScript -->
 <script>
+  // 제품 이름과 개수를 관리할 객체
+  const cartSummary = {
+    "Columbia Nariñó": 0,
+    "Brazil Serra Do Caparaó": 0,
+    "Ethiopia Yirgacheffe": 0,
+    "Guatemala Antigua": 0
+  };
+
+  // "추가" 버튼 클릭 시 실행되는 함수
+  function addToCart(productName) {
+    // 개수 증가
+    cartSummary[productName]++;
+
+    // UI 업데이트
+    const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+    if (badge) {
+      badge.textContent = `${cartSummary[productName]}개`;
+    }
   // 총 가격 계산
   let total = 0;
 
@@ -241,10 +290,21 @@
 
     total += product.price;
     document.getElementById('totalPrice').textContent = `${'${total}'}원`;
+
   }
 
   // "삭제하기" 버튼 클릭 시 실행되는 함수
   function removeFromCart(productName) {
+    // 개수가 0 이하로 내려가지 않도록 처리
+    if (cartSummary[productName] > 0) {
+      cartSummary[productName]--;
+    }
+
+    // UI 업데이트
+    const badge = document.querySelector(`#badge-${CSS.escape(productName)}`);
+    if (badge) {
+      badge.textContent = `${cartSummary[productName]}개`;
+    }
     //cartSummary에서 productName 찾기
     const product = cartSummary.find(item => item.name === productName);
 
