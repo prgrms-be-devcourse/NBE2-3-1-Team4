@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.cafe.dto">
+<mapper namespace="com.example.cafe.add_item.mapper.AddItemMapper">
+    <select id="itemAll" resultType="ItemTO">
+        select item_id, name, itemQuantity, price
+        from item
+    </select>
+    <insert id="itemAdd" parameterType="ItemTO" >
+        insert into item (name, itemQuantity, price)
+        values (#{name},#{itemQuantity},#{price})
+    </insert>
+    <insert id="ordersAdd" parameterType="OrdersTO" useGeneratedKeys="true" keyProperty="order_id">
+        insert into orders (email, address, zip_code, password)
+        values (#{email}, #{address}, #{zip_code}, PASSWORD(#{password}));
+    </insert>
+    <insert id="orderItemAdd" parameterType="OrderItemTO" >
+        insert into orderItem (order_id, item_id, orderCount, orderPrice)
+        VALUES (#{order_id}, #{item_id}, #{orderCount}, #{orderPrice});
+    </insert>
 
 </mapper>
