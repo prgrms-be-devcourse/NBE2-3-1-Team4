@@ -1,3 +1,4 @@
+/*
 package com.example.cafe.item_search.mapper;
 
 import com.example.cafe.dto.ItemTO;
@@ -13,3 +14,4 @@ public interface ItemSearchMapper {
     List<ItemTO> listPage(Map<String, Object> params); // 수정
     int totalCount();
 }
+*/

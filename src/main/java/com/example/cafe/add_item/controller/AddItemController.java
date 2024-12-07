@@ -4,7 +4,6 @@ import com.example.cafe.add_item.dao.AddItemDAO;
 import com.example.cafe.dto.ItemTO;
 import com.example.cafe.dto.OrderItemTO;
 import com.example.cafe.dto.OrdersTO;
-import com.example.cafe.item_search.dao.ItemSearchDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +16,6 @@ import java.util.Map;
 public class AddItemController {
     @Autowired
     private AddItemDAO addItemDAO;
-    @Autowired
-    private ItemSearchDAO itemSearchDAO;
 
     @GetMapping("/add_item")//사용안함
     public String getItemList(Model model) {
@@ -26,6 +23,7 @@ public class AddItemController {
         model.addAttribute("lists", lists);
         return "main";
     }
+
     @PostMapping("/add_item")
     @ResponseBody
     public int createOrder(@RequestBody Map<String, Object> requestData) {
@@ -66,9 +64,9 @@ public class AddItemController {
             Model model) {
 
         int offset = (page - 1) * pageSize; // SQL OFFSET 계산
-        List<ItemTO> lists = itemSearchDAO.cafeList(pageSize, offset); // 현제 페이지의 항목 수랑, db에서 잘라야 할 offset정의
+        List<ItemTO> lists = addItemDAO.cafeList(pageSize, offset); // 현제 페이지의 항목 수랑, db에서 잘라야 할 offset정의
         List<ItemTO> allLists = addItemDAO.itemList();// 전체 데이터 가져오기
-        int totalItemsCount = itemSearchDAO.getTotalItemsCount(); //전체 데이터 수 조회
+        int totalItemsCount = addItemDAO.getTotalItemsCount(); //전체 데이터 수 조회
         int totalPages = (int) Math.ceil((double) totalItemsCount / pageSize); // 총 페이지 수 계산
 
         model.addAttribute("page", page);

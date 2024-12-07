@@ -1,4 +1,4 @@
-package com.example.cafe.item_search.dao;
+/*package com.example.cafe.item_search.dao;
 
 import com.example.cafe.dto.ItemTO;
 import com.example.cafe.item_search.mapper.ItemSearchMapper;
@@ -32,4 +32,4 @@ public class ItemSearchDAO {
         return itemSearchMapper.totalCount();
     }
 
-}
+}*/

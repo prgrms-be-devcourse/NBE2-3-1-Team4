@@ -1,3 +1,4 @@
+/*
 package com.example.cafe.item_search.controller;
 
 import org.springframework.stereotype.Controller;
@@ -11,3 +12,4 @@ public class ItemSearchController {
         return "main";
     }
 }
+*/
