@@ -231,7 +231,6 @@
         saveCartState();
     }
 
-
     // "삭제하기" 버튼 클릭 시 실행되는 함수
     function removeFromCart(productName) {
         //cartSummary에서 productName 찾기
@@ -255,8 +254,6 @@
     }
     // Local Storage에 저장
     function saveCartState() {
-        // localStorage.setItem('cartSummary', JSON.stringify(cartSummary));
-        // localStorage.setItem('totalPrice', total);
 
         const formData = {
             email: document.getElementById('email').value,
@@ -344,7 +341,6 @@
             return;
         }
         // cartSummary JSON 데이터 파싱 및 count가 0인 항목 제거
-        // const filteredCart = JSON.parse(cartSummary).filter(item => item.count > 0);
         const filteredCart = cartSummary.filter(item => item.count > 0);
 
         // 주문 JSON 생성
@@ -369,7 +365,7 @@
             .then(flag => {
                 if (flag === 1) {
                     alert("정상 등록되었습니다.");
-                    location.reload(); // 페이지 새로고침
+                    location.reload(); // 결제 후 페이지 새로고침
                 } else {
                     alert("등록 실패하였습니다.");
                 }
@@ -381,11 +377,9 @@
         console.log(orderData);
     }
     document.addEventListener('DOMContentLoaded', () => {
-        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-            // console.log("새로고침");
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) { //새로고침
             localStorage.clear();
-        } else {
-            // console.log("페이지 이동");
+        } else { // 페이지 이동
             loadCartState();
         }
 

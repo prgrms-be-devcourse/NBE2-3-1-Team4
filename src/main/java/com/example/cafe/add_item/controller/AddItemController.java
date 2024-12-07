@@ -20,7 +20,7 @@ public class AddItemController {
     @Autowired
     private ItemSearchDAO itemSearchDAO;
 
-    @GetMapping("/add_item")
+    @GetMapping("/add_item")//사용안함
     public String getItemList(Model model) {
         List<ItemTO> lists = addItemDAO.itemList();
         model.addAttribute("lists", lists);
@@ -30,35 +30,32 @@ public class AddItemController {
     @ResponseBody
     public int createOrder(@RequestBody Map<String, Object> requestData) {
         int flag = 1;
-//      . Orders 데이터 삽입
+//      Orders 데이터 추가
         OrdersTO ordersTO = new OrdersTO();
         ordersTO.setEmail((String) requestData.get("email"));
         ordersTO.setAddress((String) requestData.get("address"));
         ordersTO.setZip_code((String) requestData.get("postcode"));
         ordersTO.setPassword((String) requestData.get("password"));
-
-        System.out.println(ordersTO);
-//        int result = addItemDAO.addOrders(ordersTO);
-//        System.out.println("addOrders: " + addItemDAO.addOrders(ordersTO));
-//        System.out.println(ordersTO.getOrder_id());
-
+        // INSERT 수행
+        addItemDAO.addOrders(ordersTO);
 
         List<Map<String, Object>> cartSummary = (List<Map<String, Object>>) requestData.get("cartSummary");
         for (Map<String, Object> item : cartSummary) {
             OrderItemTO orderItemTO = new OrderItemTO();
-//            orderItemTO.setOrder_id((String) item.get("order_id"));
-            orderItemTO.setOrder_id("10");
+            // INSERT 후 ordersTO.getOrder_id() 호출 시 자동 생성된 값이 반환됨
+            orderItemTO.setOrder_id(String.valueOf(ordersTO.getOrder_id()));
             orderItemTO.setItem_id(String.valueOf(item.get("id")));
             orderItemTO.setOrderCount(String.valueOf(item.get("count")));
-            orderItemTO.setOrderPrice(String.valueOf(item.get("price")));
+            int count = Integer.parseInt(String.valueOf(item.get("count")));
+            int price = Integer.parseInt(String.valueOf(item.get("price")));
+            orderItemTO.setOrderPrice(String.valueOf(count * price));
 
-            System.out.println(orderItemTO);
-//            System.out.println("addOrderItem: " + addItemDAO.addOrderItem(orderItemTO));
-//            int result = addItemDAO.addOrderItem(orderItemTO);
+            int result = addItemDAO.addOrderItem(orderItemTO);
+            if (result != 1) { // 하나라도 실패하면 실패 플래그로 설정
+                flag = 0;
+                break;
+            }
         }
-//        if (result == 0) {
-//            flag = 0;
-//        }
 
         return flag;
     }
@@ -73,16 +70,12 @@ public class AddItemController {
         List<ItemTO> allLists = addItemDAO.itemList();// 전체 데이터 가져오기
         int totalItemsCount = itemSearchDAO.getTotalItemsCount(); //전체 데이터 수 조회
         int totalPages = (int) Math.ceil((double) totalItemsCount / pageSize); // 총 페이지 수 계산
-        System.out.println(lists);
+
         model.addAttribute("page", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("lists", lists);
         model.addAttribute("allLists", allLists);
 
         return "sample2_paging";
-
-        //데이터 전체 가져오기
-        //model.addAttribute("lists", lists);
-        // 갯수 0 개 데이터 삭제
     }
 }

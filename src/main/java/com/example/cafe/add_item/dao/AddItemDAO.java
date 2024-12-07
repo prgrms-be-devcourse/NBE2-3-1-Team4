@@ -29,11 +29,21 @@ public class AddItemDAO {
 
     // Orders 데이터 추가
     public int addOrders(OrdersTO to) {
-        return addItemMapper.ordersAdd(to);
+        int flag = 1;
+        int result = addItemMapper.ordersAdd(to);
+        if( result != 1 ) {
+            flag = 0;
+        }
+        return flag;
     }
 
     // OrderItem 데이터 추가
     public int addOrderItem(OrderItemTO to) {
-        return addItemMapper.orderItemAdd(to);
+        int flag = 1;
+        int result = addItemMapper.orderItemAdd(to);
+        if(result != 1 ) {
+            flag = 0;
+        }
+        return flag;
     }
 }
