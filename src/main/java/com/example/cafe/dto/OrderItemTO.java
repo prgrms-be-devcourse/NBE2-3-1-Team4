@@ -18,7 +18,7 @@ public class OrderItemTO {
     private String orderCount;
     private String orderPrice;
 
-
+/*
     //private List<ItemTO> item;
     private ItemTO item;
     private List<OrderItemTO> order;
@@ -28,6 +28,6 @@ public class OrderItemTO {
 
     public String getItemQuantity(){
         return orderCount != null ? orderCount : "0";
-    }
+    }*/
 
 }

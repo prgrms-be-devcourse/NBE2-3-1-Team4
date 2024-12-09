@@ -59,27 +59,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>주문목록 조회</title>
-  <script type="text/javascript">
-    window.onload = function () {
-      document.getElementById( 'btn_select' ).onclick = function () {
-        // 모든 라디오 버튼 가져오기
-        const radioButtons = document.querySelectorAll("input[name='selectedOrder']");
-        // 라디오 버튼이 모두 disabled 인지 확인
-        const allDisabled = Array.from(radioButtons).every(radio => radio.disabled);
-        if (allDisabled) {
-          alert("주문을 선택할 수 없는 상태입니다.");
-          return false;
-        }
-        // 선택된 라디오 버튼 확인
-        const selected = Array.from(radioButtons).some(radio => radio.checked);
-        if (!selected) {
-          alert("옵션을 선택해주세요.");
-          return false;
-        }
-        document.orderForm.submit();
-      };
-    };
-  </script>
+
   <style>
     body {
       padding:1.5em;
@@ -223,17 +203,38 @@
   <h1 class="text-center mb-4" style="color: #202428;">주문목록 조회</h1>
   <p class="text-center mb-4" style="color: #202428;">주문 목록 선택 후 선택 버튼을 누르시면 주문 수정 또는 취소를 할 수 있습니다.</p>
 </div>
-  <form name="orderForm" method="post" action="orderlist_modifyanddelete.do?orderId=<%=orderId%>">
+  <form name="orderForm" method="post" action="choiced_order?orderId=<%=orderId%>">
       <input type="hidden" name="email" value="<%=email%>" />
     <div class="tbl_head02 tbl_wrap">
         <%=sbHtml.toString()%>
     </div>
     <div class="btn_area">
       <div class="right-align" style="margin-top: 20px">
-        <input type="button" class="btn-back large" value="뒤로가기" onclick="location.href='main.do'"/>
+        <input type="button" class="btn-back large" value="뒤로가기" onclick="location.href='main'"/>
         <input type="button" class="btn-normal large" id="btn_select" value="선택"/>
       </div>
     </div>
   </form>
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById( 'btn_select' ).onclick = function () {
+            // 모든 라디오 버튼 가져오기
+            const radioButtons = document.querySelectorAll("input[name='selectedOrder']");
+            // 라디오 버튼이 모두 disabled 인지 확인
+            const allDisabled = Array.from(radioButtons).every(radio => radio.disabled);
+            if (allDisabled) {
+                alert("주문을 선택할 수 없는 상태입니다.");
+                return false;
+            }
+            // 선택된 라디오 버튼 확인
+            const selected = Array.from(radioButtons).some(radio => radio.checked);
+            if (!selected) {
+                alert("옵션을 선택해주세요.");
+                return false;
+            }
+            document.orderForm.submit();
+        };
+    };
+</script>
 </body>
 </html>

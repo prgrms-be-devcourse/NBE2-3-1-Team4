@@ -7,6 +7,8 @@ import com.example.cafe.dto.OrdersTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,14 +65,13 @@ public class AddItemDAO {
         return addItemMapper.findOrdersCountByEmail(email);
     }
 
+    public OrdersTO getAboutOrder(int orderId) {
+        return addItemMapper.findAboutOrder(orderId);
+    }
+
     // 이메일에 해당하는 상품 리스트를 반환
     public List<OrdersTO> getOrderList(String email) {
         return addItemMapper.findOrdersWithItems(email);
-    }
-
-    // 선택한 orderId에 대한 주문목록 반환
-    public OrdersTO getOrdersById(int orderId) {
-        return addItemMapper.findOrdersByOrderId(orderId);
     }
 
     // delete 에 대한 플래그 처리
@@ -83,7 +84,7 @@ public class AddItemDAO {
 
         // TODO DB 자동 백업 구현 후 14시에 배송상태 업데이트 했을때 주석 풀어서 사용
         // 현재 시스템 시간대의 ZonedDateTime을 가져옴
-        /*ZoneId systemZoneId = ZoneId.systemDefault(); // 현재 시스템 시간대
+        ZoneId systemZoneId = ZoneId.systemDefault(); // 현재 시스템 시간대
         ZonedDateTime now = ZonedDateTime.now(systemZoneId); // 현재 시간
         ZonedDateTime today14 = now.withHour(14).withMinute(0).withSecond(0).withNano(0);
         boolean isAfter14 = now.isAfter(today14);  // 14시 이후인지 확인
@@ -96,13 +97,43 @@ public class AddItemDAO {
                 flag = 1;
                 return flag;
             }
-        }*/
+        }
 
         int result = addItemMapper.deleteOkOrders(ordersTO);
         if( result == 1 ) {
             flag = 0;       // 정상
         }
 
+        return flag;
+    }
+
+
+    // 주문 ID로 주문 내역 조회
+    public List<OrderItemTO> getOrderByOrderId(int orderId) {
+        return addItemMapper.findOrderItemByOrderId(orderId);
+    }
+
+    // 주문자 배송 정보 업데이트
+    public int updateOrders(OrdersTO orders) {
+        int flag = 2;
+        int result = addItemMapper.updateOrders(orders);
+        System.out.println(result);
+        if (result == 0) {
+            flag = 1;
+        } else if (result == 1) {
+            flag = 0;
+        }
+        return flag;
+    }
+
+    public int updateOrderCount(OrderItemTO orderItem) {
+        int flag = 2;
+        int result = addItemMapper.updateOrderCount(orderItem);
+        if(result == 0) {
+            flag = 1;
+        }else if(result == 1) {
+            flag = 0;
+        }
         return flag;
     }
 

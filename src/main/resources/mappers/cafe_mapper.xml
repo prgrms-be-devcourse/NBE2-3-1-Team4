@@ -49,12 +49,6 @@
         where email=#{email}
     </select>
 
-    <select id="findOrdersByOrderId" parameterType="int" resultType="OrdersTO">
-        select order_id, order_date, address, orderStatus, zip_code
-        from orders
-        where order_id=#{order_id}
-    </select>
-
     <select id="findDeleteOrders" parameterType="String" resultType="OrdersTO">
         select order_id, order_date, orderStatus
         from orders
@@ -64,6 +58,7 @@
     <resultMap id="OrderResultMap" type="com.example.cafe.dto.OrdersTO">
         <id property="order_id" column="order_id"/>
         <result property="order_date" column="order_date"/>
+        <result property="email" column="email"/>
         <result property="orderStatus" column="orderStatus"/>
         <result property="zip_code" column="zip_code"/>
         <result property="address" column="address"/>
@@ -105,8 +100,66 @@
             o.email=#{email}
     </select>
 
+    <select id="findAboutOrder" resultMap="OrderResultMap">
+        SELECT
+            o.order_id,
+            o.email,
+            o.zip_code,
+            o.address,
+            oi.order_item_id,
+            oi.item_id,
+            oi.orderCount,
+            oi.orderPrice,
+            i.name
+        FROM
+            orders o
+                JOIN
+            orderItem oi ON o.order_id = oi.order_id
+                JOIN
+            item i ON oi.item_id = i.item_id
+        WHERE
+            o.order_id=#{orderId}
+    </select>
+
     <delete id="deleteOkOrders" parameterType="OrdersTO">
         delete from orders
         where order_id=#{order_id}
     </delete>
+
+    <!--update-->
+
+    <!-- 주문 ID로 주문 내역 조회 -->
+    <select id="findOrderItemByOrderId" resultType="OrderItemTO">
+        SELECT
+            oi.order_item_id,
+            oi.order_id,
+            i.item_id,
+            i.name AS item_name,
+            oi.orderCount,
+            oi.orderPrice
+        FROM orders o
+                 JOIN orderItem oi ON o.order_id = oi.order_id
+                 JOIN item i ON oi.item_id = i.item_id
+        WHERE o.order_id = #{order_id} -- and oi.item_id=#{item_id}
+    </select>
+
+    <!--상품 목록 조회 -->
+    <select id="findAllItems" resultType="ItemTO">
+        SELECT item_id, name, price
+        FROM item;
+    </select>
+
+    <!-- 주문 정보 업데이트 -->
+    <update id="updateOrders" parameterType="OrdersTO">
+        UPDATE orders
+        SET address = #{address}, zip_code = #{zip_code}
+        WHERE order_id = #{order_id}
+    </update>
+
+    <update id="updateOrderCount" parameterType="map">
+        UPDATE orderItem oi
+            JOIN item i ON oi.item_id = i.item_id
+            SET oi.orderCount = #{orderCount}
+        WHERE oi.order_id = #{order_id} AND i.item_id = #{item_id};
+    </update>
 </mapper>

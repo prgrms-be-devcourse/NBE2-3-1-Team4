@@ -18,9 +18,19 @@ public interface AddItemMapper {
     List<ItemTO> listPage(Map<String, Object> params); // 수정
     int totalCount();
 
+    //delete
     List<OrdersTO> findOrdersByEmailAndPassword(String email, String password);
     int findOrdersCountByEmail(String email);
     List<OrdersTO> findOrdersWithItems(String email);
-    OrdersTO findOrdersByOrderId(int orderId);
+    OrdersTO findAboutOrder(int orderId);
     int deleteOkOrders(OrdersTO ordersTO);
+
+    // update
+
+    List<OrderItemTO> findOrderItemByOrderId(int orderId);
+    //주문자 정보 update
+    int updateOrders(OrdersTO ordersTO);
+    //개수 update
+    int updateOrderCount(OrderItemTO orderItem);
+
 }

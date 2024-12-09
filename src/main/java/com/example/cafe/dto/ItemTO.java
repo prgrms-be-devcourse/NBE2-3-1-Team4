@@ -5,7 +5,6 @@ import org.apache.ibatis.type.Alias;
 
 import java.util.List;
 
-@Alias(value = "Item")
 @Getter
 @Setter
 //@AllArgsConstructor

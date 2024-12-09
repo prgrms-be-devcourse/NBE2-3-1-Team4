@@ -59,8 +59,8 @@ public class AddItemController {
         return flag;
     }
 
-    @RequestMapping("/sample2page")
-    public String Sample2Page(
+    @RequestMapping("/main")
+    public String main(
             @RequestParam(defaultValue = "1") int page, // 현재 페이지 (기본값: 1)
             @RequestParam(defaultValue = "5") int pageSize, // 페이지당 항목 수 (기본값: 5)
             Model model) {
@@ -76,28 +76,8 @@ public class AddItemController {
         model.addAttribute("lists", lists);
         model.addAttribute("allLists", allLists);
 
-        return "sample2_paging";
+        return "main";
     }
-
-
-    @RequestMapping("/main.do")
-    public String main(@RequestParam(defaultValue = "1") int page, // 현재 페이지 (기본값: 1)
-                       @RequestParam(defaultValue = "5") int pageSize, // 페이지당 항목 수 (기본값: 5)
-                       Model model) {
-        int offset = (page - 1) * pageSize; // SQL OFFSET 계산
-        List<ItemTO> lists = addItemDAO.cafeList(pageSize, offset); // 현제 페이지의 항목 수랑, db에서 잘라야 할 offset정의
-        List<ItemTO> allLists = addItemDAO.itemList();// 전체 데이터 가져오기
-        int totalItemsCount = addItemDAO.getTotalItemsCount(); //전체 데이터 수 조회
-        int totalPages = (int) Math.ceil((double) totalItemsCount / pageSize); // 총 페이지 수 계산
-
-        model.addAttribute("page", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("lists", lists);
-        model.addAttribute("allLists", allLists);
-
-        return "sample2_paging";
-    }
-
 
     @RequestMapping("/login.do")
     public String login() {
@@ -149,16 +129,17 @@ public class AddItemController {
     }
 
     // 선택한 주문목록 반환
-    @RequestMapping("/orderlist_modifyanddelete.do")
-    public String orderlist_modifyanddelete(
+    @RequestMapping("/choiced_order")
+    public String choiced_order(
             @RequestParam("selectedOrder") int orderId,
             @RequestParam("email") String email,
             Model model
     ){
         model.addAttribute("email", email);
-        model.addAttribute("orderTo", addItemDAO.getOrdersById(orderId));
+        model.addAttribute("orderTo",
+                addItemDAO.getAboutOrder(orderId));
 
-        return "orderlist_modifyanddelete";
+        return "choiced_order";
     }
 
     @PostMapping("/delete_item_ok.do")
@@ -166,8 +147,33 @@ public class AddItemController {
             @RequestParam("orderId") int orderId,
             Model model
     ) {
-        OrdersTO ordersTO = addItemDAO.getOrdersById(orderId);
+        OrdersTO ordersTO = addItemDAO.getAboutOrder(orderId);
         model.addAttribute( "flag", addItemDAO.orderDeleteOk( ordersTO ));
         return "orderlist_delete_ok";
+    }
+    
+    // update 
+    
+    @PostMapping("/update_item_ok")
+    public String updateItemOk(HttpServletRequest request, Model model) {
+
+        // OrdersTO 객체 생성
+        OrdersTO orders = new OrdersTO();
+        orders.setOrder_id(Integer.parseInt(request.getParameter("order_id")));
+        orders.setAddress(request.getParameter("address"));
+        orders.setZip_code(request.getParameter("zip_code"));
+
+        /// OrderItemTO 객체 생성 및 값 설정
+        OrderItemTO orderItem = new OrderItemTO();
+        orderItem.setOrderPrice(request.getParameter("orderPrice")); // 주문 가격 (String)
+        orderItem.setOrderCount(request.getParameter("orderCount"));
+        orderItem.setItem_id(request.getParameter("item_id"));// 주문 개수 (String)
+
+        int flag2= addItemDAO.updateOrders(orders);
+
+        // 결과를 플래그로 설정
+        model.addAttribute("flag", flag2);
+
+        return "update_ok";
     }
 }
