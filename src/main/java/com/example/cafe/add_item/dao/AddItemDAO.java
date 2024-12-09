@@ -87,17 +87,20 @@ public class AddItemDAO {
         ZoneId systemZoneId = ZoneId.systemDefault(); // 현재 시스템 시간대
         ZonedDateTime now = ZonedDateTime.now(systemZoneId); // 현재 시간
         ZonedDateTime today14 = now.withHour(14).withMinute(0).withSecond(0).withNano(0);
-        boolean isAfter14 = now.isAfter(today14);  // 14시 이후인지 확인
+        if(now.isAfter(today14)){
+            boolean isBefore14 = now.isBefore(today14);  // 14시 이후인지 확인
 
-        String orderStatus =  ordersTO.getOrderStatus();
-        if (orderStatus.equals("beforeDelivery")) {
-            // orderStatus before 인데 금일 14시 이후에 삭제를 눌렀을 때
-            // (14시 이전에 페이지를 넘겼으나, 페이지에 머무르다 14시 이후가 된 경우)
-            if (isAfter14) {
-                flag = 1;
-                return flag;
+            String orderStatus =  ordersTO.getOrderStatus();
+            if (orderStatus.equals("beforeDelivery")) {
+                // orderStatus before 인데 금일 14시 이후에 삭제를 눌렀을 때
+                // (14시 이전에 페이지를 넘겼으나, 페이지에 머무르다 14시 이후가 된 경우)
+                if (isBefore14) {
+                    flag = 1;
+                    return flag;
+                }
             }
         }
+
 
         int result = addItemMapper.deleteOkOrders(ordersTO);
         if( result == 1 ) {
@@ -109,8 +112,12 @@ public class AddItemDAO {
 
 
     // 주문 ID로 주문 내역 조회
-    public List<OrderItemTO> getOrderByOrderId(int orderId) {
-        return addItemMapper.findOrderItemByOrderId(orderId);
+//    public List<OrderItemTO> getOrderById(int orderId) {
+//        return addItemMapper.findOrdersItemByOrderId(orderId);
+//    }
+
+    public OrdersTO getOrdersById(int orderId) {
+        return addItemMapper.findOrdersByOrderId(orderId);
     }
 
     // 주문자 배송 정보 업데이트

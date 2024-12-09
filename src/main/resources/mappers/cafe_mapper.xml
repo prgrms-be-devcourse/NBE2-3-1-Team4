@@ -49,8 +49,14 @@
         where email=#{email}
     </select>
 
-    <select id="findDeleteOrders" parameterType="String" resultType="OrdersTO">
+<!--    <select id="findDeleteOrders" parameterType="int" resultType="OrdersTO">
         select order_id, order_date, orderStatus
+        from orders
+        where order_id=#{order_id}
+    </select>-->
+
+    <select id="findOrdersByOrderId" parameterType="int" resultType="OrdersTO">
+        select order_id, order_date, address, orderStatus, zip_code
         from orders
         where order_id=#{order_id}
     </select>
@@ -105,6 +111,7 @@
             o.order_id,
             o.email,
             o.zip_code,
+            o.orderStatus,
             o.address,
             oi.order_item_id,
             oi.item_id,

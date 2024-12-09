@@ -172,7 +172,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">비밀번호</label>
-                    <input type="text" class="form-control" id="password">
+                    <input type="password" class="form-control" id="password">
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">주소</label>

@@ -155,11 +155,15 @@ public class AddItemController {
     // update 
     
     @PostMapping("/update_item_ok")
-    public String updateItemOk(HttpServletRequest request, Model model) {
+    public String updateItemOk(
+            @RequestParam("orderId") int orderId,
+            HttpServletRequest request,
+            Model model
+    ) {
 
         // OrdersTO 객체 생성
         OrdersTO orders = new OrdersTO();
-        orders.setOrder_id(Integer.parseInt(request.getParameter("order_id")));
+        orders.setOrder_id(orderId);
         orders.setAddress(request.getParameter("address"));
         orders.setZip_code(request.getParameter("zip_code"));
 

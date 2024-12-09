@@ -24,10 +24,10 @@ public interface AddItemMapper {
     List<OrdersTO> findOrdersWithItems(String email);
     OrdersTO findAboutOrder(int orderId);
     int deleteOkOrders(OrdersTO ordersTO);
+    OrdersTO findOrdersByOrderId(int orderId);
+
 
     // update
-
-    List<OrderItemTO> findOrderItemByOrderId(int orderId);
     //주문자 정보 update
     int updateOrders(OrdersTO ordersTO);
     //개수 update

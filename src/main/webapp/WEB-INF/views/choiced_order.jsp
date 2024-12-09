@@ -1,15 +1,13 @@
 <%@ page import="com.example.cafe.dto.OrdersTO" %>
 <%@ page import="com.example.cafe.dto.OrderItemTO" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.cafe.dto.ItemTO" %>
-<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%
   OrdersTO orders = (OrdersTO) request.getAttribute("orderTo");
-  int orderId = orders.getOrder_id();
+
   String email = orders.getEmail();
-  System.out.println(orders.getEmail());
+  int orderId = orders.getOrder_id();
   String address = orders.getAddress();
   String zipCode = orders.getZip_code();
 
@@ -111,7 +109,7 @@
       width : 370px;
     }
 
-    #mbtn{
+    #btn_updateorder{
       width : 370px;
     }
 
@@ -132,13 +130,12 @@
   <h1 class="text-center col">주문 상세</h1>
 </div>
 <div class="card">
-  <form action="update_item_ok" method="post" name="mfrm">
+  <form id="myForm" method="post">
   <div class="row">
     <%--      <input type="hidden" name="email" value="<%=email%>"/>--%>
     <%--주문 목록 & 주소 불러오기 --%>
     <div class="col-md summary p-4">
-      <form action="update_item_ok" method="post" name="mfrm">
-        <input type="hidden" name="order_id" value="<%= orderId %>" />
+        <input type="hidden" name="orderId" value="<%= orderId %>" />
         <div>
           <h5 class="m-0 p-0"><b>Summary</b></h5>
         </div>
@@ -154,11 +151,10 @@
 
       %>
 
-        <form>
 
           <div class="mb-3">
-            <label type="hidden" for="order_id" class="form-label">주문번호</label>
-            <input type="text" class="form-control mb-1" id="order_id" name="order_id" value="<%= orderId %>" readonly>
+            <label type="hidden" for="orderId" class="form-label">주문번호</label>
+            <input type="text" class="form-control mb-1" id="orderId" name="orderId" value="<%= orderId %>" readonly>
           </div>
           <div class="mb-3">
             <label type="hidden" for="email" class="form-label">이메일</label>
@@ -173,13 +169,12 @@
             <input type="text" class="form-control" id="zip_code" name="zip_code" value="<%= zipCode %>">
           </div>
         <div>당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</div>
-      </form>
       <div class="row pt-2 pb-2 border-top">
         <h5 class="col">총금액</h5>
         <h5 class="col text-end"> <%=totalPrice%></h5>
       </div>
-        <button type="submit" class="btn btn-dark" id="mbtn" onclick="location.href='update_item_ok'">주문수정</button>
-        <button class="btn btn-dark" id="btn_cancelorder">주문취소</button>
+        <button  class="btn btn-dark col-5" id="btn_updateorder">주문수정</button>
+        <button  class="btn btn-dark col-5" id="btn_cancelorder">주문취소</button>
     </div>
   </div>
   </form>
@@ -193,11 +188,25 @@
     document.getElementById( 'btn_cancelorder' ).onclick = function () {
       if (confirm("주문을 취소 하시겠습니까?")) {
         const form = document.getElementById('myForm');
-        form.id = "deleteForm" + <%= orderId%>;
+        form.id = "deleteForm" + <%=orderId%>;
         form.action = "/delete_item_ok.do"; // action을 동적으로 변경
         form.submit();        // 폼 제출
       } else {
         alert("주문 취소 요청이 취소 되었습니다.");
+        event.preventDefault();
+      }
+    };
+
+    document.getElementById( 'btn_updateorder' ).onclick = function () {
+      if (confirm("주문을 수정 하시겠습니까?")) {
+        const form = document.getElementById('myForm');
+        form.id = "updateForm" + <%=orderId%>;
+        console.log(form.id);
+        form.action = "/update_item_ok"; // action을 동적으로 변경
+        form.submit();        // 폼 제출
+      } else {
+        alert("주문 수정 요청이 취소 되었습니다.");
+        event.preventDefault();
       }
     };
   };
